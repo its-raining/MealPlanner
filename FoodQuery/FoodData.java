@@ -1,3 +1,4 @@
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
@@ -20,7 +21,8 @@ public class FoodData implements FoodDataADT<FoodItem> {
      * Public constructor
      */
     public FoodData() {
-        // TODO : Complete
+        this.foodItemList = new ArrayList<FoodItem>();
+        this.indexes = new HashMap<String, BPTree<Double, FoodItem>>();
     }
     
     
@@ -31,6 +33,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     @Override
     public void loadFoodItems(String filePath) {
         // TODO : Complete
+    	
     }
 
     /*
@@ -71,5 +74,12 @@ public class FoodData implements FoodDataADT<FoodItem> {
         // TODO : Complete
         return null;
     }
+
+
+	@Override
+	public void saveFoodItems(String filename) {
+		// TODO Auto-generated method stub
+		
+	}
 
 }
