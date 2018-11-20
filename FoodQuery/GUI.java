@@ -1,5 +1,7 @@
 package application;
 
+import java.io.File;
+
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,6 +22,8 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
+import javafx.stage.Stage;
 
 
 public class GUI {
@@ -27,7 +31,7 @@ public class GUI {
 	private static TableView<FoodItem> foodView;
 	private static ObservableList<FoodItem> foodList = FXCollections.observableArrayList();
 	private static int userId=0;
-	private static FoodData foodData;
+	private static FoodData foodData = new FoodData();
 
 	public static BorderPane setupGUI(BorderPane root) {
 				
@@ -53,6 +57,21 @@ public class GUI {
 		// items underneath the file menu
 		MenuItem load = new MenuItem("Load");
 		MenuItem save = new MenuItem("Save");
+		
+		load.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent t) {
+				FileChooser fileChooser = new FileChooser();
+				File file = fileChooser.showOpenDialog(new Stage());
+				if (file != null) {
+					foodData.loadFoodItems(file.getAbsolutePath());
+					foodList.clear(); 
+					
+					for (FoodItem food : foodData.getAllFoodItems()) {
+						foodList.add(food);
+					}
+				}
+			}
+		});
 		
 		fileMenu.getItems().add(load);
 		fileMenu.getItems().add(save);
@@ -169,22 +188,26 @@ public class GUI {
 		addFat.setMaxWidth(70);
 		
 		final TextField addCarbonHydrate = new TextField();
-		addCarbonHydrate.setPromptText("CarbonHydrate");
+		addCarbonHydrate.setPromptText("Carbs");
 		addCarbonHydrate.setLayoutX(5);
 		addCarbonHydrate.setLayoutY(47);
-		addCarbonHydrate.setMaxWidth(120);
+		addCarbonHydrate.setMaxWidth(70);
 		
 		final TextField addFiber = new TextField();
 		addFiber.setPromptText("Fiber");
-		addFiber.setLayoutX(133);
+		addFiber.setLayoutX(78);
 		addFiber.setLayoutY(47);
-		addFiber.setMaxWidth(100);
+		addFiber.setMaxWidth(70);
 		
 		final TextField addProtein = new TextField();
 		addProtein.setPromptText("Protein");
-		addProtein.setLayoutX(270);
+		addProtein.setLayoutX(265);
 		addProtein.setLayoutY(10);
-		addProtein.setMaxWidth(70);
+		addProtein.setMaxWidth(75);
+		
+		Button addtoFoodList = new Button("Add to List");
+		addtoFoodList.setLayoutX(151);
+		addtoFoodList.setLayoutY(47);
 		
 		Button addtoMeal = new Button("Add To Meal");
 		addtoMeal.setLayoutX(240);
@@ -206,16 +229,16 @@ public class GUI {
 		removeFood.setLayoutX(575);
 		removeFood.setLayoutY(47);
 		
-		addtoMeal.setOnAction(new EventHandler<ActionEvent>() {
+		addtoFoodList.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			 public void handle(ActionEvent e) {
 				FoodItem newFood = new FoodItem("" + userId, addFoodName.getText());
 				userId++;
 				foodList.add(newFood);
 			}
-		});
+		});		
 		
-		bottomPane.getChildren().addAll(addFoodName, addCalorie, addFat, addCarbonHydrate, addFiber, addProtein, addtoMeal, applyQuery, viewMealSummary, resetFilter, removeFood);
+		bottomPane.getChildren().addAll(addFoodName, addCalorie, addFat, addCarbonHydrate, addFiber, addProtein, addtoMeal, addtoFoodList, applyQuery, viewMealSummary, resetFilter, removeFood);
 		return bottomPane;
 	}
 }

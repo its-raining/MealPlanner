@@ -44,7 +44,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	int lineNum = 0;//Index to modify in foodItemList
     	while (readFile.hasNextLine()) {
     	    String[] currLine = readFile.nextLine().split(",");
-    	    if(currLine[0].equals("")) {
+    	    if(currLine.length == 0 || currLine[0].equals("")) {
     	        break;//Exits loop at end of data
     	    }
     	    foodItemList.add(new FoodItem(currLine[0], currLine[1]));//Sets ID and name
@@ -59,7 +59,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
     	readFile.close();
         }
         catch(FileNotFoundException e) {
-            
+            System.out.println("File not Found");
         }    
     }
 
@@ -98,8 +98,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
      */
     @Override
     public List<FoodItem> getAllFoodItems() {
-        // TODO : Complete
-        return null;
+        return this.foodItemList;
     }
 
 
