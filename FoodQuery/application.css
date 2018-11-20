@@ -1,13 +1,27 @@
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
-#hbox-bottom {
+#bottompane {
 	-fx-min-height: 100;
 	-fx-max-height: 100;
-	-fx-background-color: blue;
+	-fx-background-color: grey;
 }
 
 .scrollpane {
 	-fx-min-width: 350;
 	-fx-max-width: 350;
-	-fx-min-height: 500;
-	-fx-max-height: 500;
+	-fx-min-height: 450;
+	-fx-max-height: 450;
+}
+
+.filterpane {
+	-fx-min-width: 225;
+	-fx-max-width: 225;
+	-fx-min-height: 450;
+	-fx-max-height: 450;
+}
+
+.mymealpane {
+	-fx-min-width: 225;
+	-fx-max-width: 225;
+	-fx-min-height: 450;
+	-fx-max-height: 450;
 }

@@ -1,5 +1,8 @@
 package application;
 
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
@@ -8,16 +11,22 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 
 
 public class GUI {
 
 	public static BorderPane setupGUI(BorderPane root) {
 		
+		
 		root.setTop(setTopMenu());
 		root.setBottom(setBottomButtons());
-		root.setLeft(setLeftFoodPane());
-		
+		root.setLeft(setLeftFoodPane());			
+		root.setCenter(setFilterPane());		
+		root.setRight(setRightMealPane());
+				
 		return root;
 	}
 	
@@ -51,35 +60,106 @@ public class GUI {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private static ScrollPane setLeftFoodPane() {
+	private static VBox setLeftFoodPane() {
+		VBox leftVbox = new VBox();
+		final Label myMeal = new Label("Food List");
+		myMeal.setFont(new Font("Arial", 25));
 		ScrollPane foodListPane = new ScrollPane();
 		
 		TableView<FoodItem> foodView = new TableView<FoodItem>();
+		
 		foodView.setEditable(false);
 		foodView.setPrefSize(340, 500);
 		foodView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		TableColumn<FoodItem, String> nameCol = new TableColumn<>("Food Name");
 		
-		foodView.getColumns().addAll(nameCol);
+		foodView.getColumns().addAll(nameCol);	
 		
 		foodListPane.setContent(foodView);
 		foodListPane.getStyleClass().add("scrollpane");
 		
-		return foodListPane;
+		leftVbox.setAlignment(Pos.CENTER);
+		leftVbox.getChildren().addAll(myMeal, foodListPane);
+		return leftVbox;
+	}
+
+	@SuppressWarnings("unchecked")
+	private static VBox setFilterPane() {
+		VBox filterVbox = new VBox();
+		final Label filters = new Label("Filters");
+		filters.setFont(new Font("Arial", 25));
+		ScrollPane filterPane = new ScrollPane();
+		
+		TableView<String> filterView = new TableView<String>();
+		
+		filterView.setEditable(false);
+		filterView.setPrefSize(225, 500);
+		filterView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		
+		TableColumn<String, Double> nutrientCol = new TableColumn<>("Nutrient");
+		TableColumn<String, Double> rangeCol = new TableColumn<>("Range");
+
+		filterView.getColumns().addAll(nutrientCol, rangeCol);
+		
+		filterPane.setContent(filterView);
+		filterPane.getStyleClass().add("filterpane");
+		
+		filterVbox.setAlignment(Pos.CENTER);
+		filterVbox.getChildren().addAll(filters, filterPane);
+		return filterVbox;
 	}
 	
-	private static ScrollPane setFilterPane() {
-		return null;
+	@SuppressWarnings("unchecked")
+	private static VBox setRightMealPane() {
+		VBox myMealVbox = new VBox();
+		final Label myMeal = new Label("My Meal");
+		myMeal.setFont(new Font("Arial", 25));
+		ScrollPane rightMealPane = new ScrollPane();
+		
+		TableView<FoodItem> myMealView = new TableView<FoodItem>();
+		
+		myMealView.setEditable(false);
+		myMealView.setPrefSize(225, 500);
+		myMealView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		
+		TableColumn<FoodItem, String> nameCol = new TableColumn<>("My Food Name");
+		
+		myMealView.getColumns().addAll(nameCol);		
+		rightMealPane.setContent(myMealView);
+		rightMealPane.getStyleClass().add("mymealpane");
+		
+		myMealVbox.setAlignment(Pos.CENTER);
+		myMealVbox.getChildren().addAll(myMeal, rightMealPane);
+		
+		return myMealVbox;
 	}
 	
-	private static ScrollPane setRightMealPane() {
-		return null;
-	}
-	
-	private static HBox setBottomButtons() {
-		HBox hbox = new HBox();
-		hbox.setId("hbox-bottom");
-		return hbox;
+	private static Pane setBottomButtons() {
+		Pane bottomPane = new Pane();		
+		bottomPane.setId("bottompane");
+		
+		Button addtoMeal = new Button("Add To Meal");
+		addtoMeal.setLayoutX(5);
+		addtoMeal.setLayoutY(10);
+		
+		Button applyQuery = new Button("Apply Query");
+		applyQuery.setLayoutX(350);
+		applyQuery.setLayoutY(10);
+		
+		Button viewMealSummary = new Button("View Meal Summary");
+		viewMealSummary.setLayoutX(575);
+		viewMealSummary.setLayoutY(10);
+		
+		Button resetFilter = new Button("Reset Filter");
+		resetFilter.setLayoutX(350);
+		resetFilter.setLayoutY(47);
+		
+		Button removeFood = new Button("Remove Food");
+		removeFood.setLayoutX(575);
+		removeFood.setLayoutY(47);
+		
+		bottomPane.getChildren().addAll(addtoMeal, applyQuery, viewMealSummary, resetFilter, removeFood);
+		return bottomPane;
 	}
 }
