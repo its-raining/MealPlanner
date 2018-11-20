@@ -1,5 +1,10 @@
 package application;
 
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -9,6 +14,7 @@ import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
@@ -17,10 +23,14 @@ import javafx.scene.text.Font;
 
 
 public class GUI {
+		
+	private static TableView<FoodItem> foodView;
+	private static ObservableList<FoodItem> foodList = FXCollections.observableArrayList();
+	private static int userId=0;
+	private static FoodData foodData;
 
 	public static BorderPane setupGUI(BorderPane root) {
-		
-		
+				
 		root.setTop(setTopMenu());
 		root.setBottom(setBottomButtons());
 		root.setLeft(setLeftFoodPane());			
@@ -73,11 +83,12 @@ public class GUI {
 		foodView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		TableColumn<FoodItem, String> nameCol = new TableColumn<>("Food Name");
-		
+		nameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
 		foodView.getColumns().addAll(nameCol);	
+		foodView.setItems(foodList);
 		
 		foodListPane.setContent(foodView);
-		foodListPane.getStyleClass().add("scrollpane");
+		foodListPane.getStyleClass().add("scrollpane");				
 		
 		leftVbox.setAlignment(Pos.CENTER);
 		leftVbox.getChildren().addAll(myMeal, foodListPane);
@@ -97,8 +108,8 @@ public class GUI {
 		filterView.setPrefSize(225, 500);
 		filterView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
-		TableColumn<String, Double> nutrientCol = new TableColumn<>("Nutrient");
-		TableColumn<String, Double> rangeCol = new TableColumn<>("Range");
+		TableColumn<String, String> nutrientCol = new TableColumn<String, String>("Nutrient");
+		TableColumn<String, Double> rangeCol = new TableColumn<String, Double>("Range");
 
 		filterView.getColumns().addAll(nutrientCol, rangeCol);
 		
@@ -138,10 +149,46 @@ public class GUI {
 	private static Pane setBottomButtons() {
 		Pane bottomPane = new Pane();		
 		bottomPane.setId("bottompane");
+				
+		final TextField addFoodName = new TextField();
+		addFoodName.setPromptText("Food Name");
+		addFoodName.setLayoutX(5);
+		addFoodName.setLayoutY(10);
+		addFoodName.setMaxWidth(100);
+		
+		final TextField addCalorie = new TextField();
+		addCalorie.setPromptText("Calorie");
+		addCalorie.setLayoutX(113);
+		addCalorie.setLayoutY(10);
+		addCalorie.setMaxWidth(70);
+		
+		final TextField addFat = new TextField();
+		addFat.setPromptText("Fat");
+		addFat.setLayoutX(190);
+		addFat.setLayoutY(10);
+		addFat.setMaxWidth(70);
+		
+		final TextField addCarbonHydrate = new TextField();
+		addCarbonHydrate.setPromptText("CarbonHydrate");
+		addCarbonHydrate.setLayoutX(5);
+		addCarbonHydrate.setLayoutY(47);
+		addCarbonHydrate.setMaxWidth(120);
+		
+		final TextField addFiber = new TextField();
+		addFiber.setPromptText("Fiber");
+		addFiber.setLayoutX(133);
+		addFiber.setLayoutY(47);
+		addFiber.setMaxWidth(100);
+		
+		final TextField addProtein = new TextField();
+		addProtein.setPromptText("Protein");
+		addProtein.setLayoutX(270);
+		addProtein.setLayoutY(10);
+		addProtein.setMaxWidth(70);
 		
 		Button addtoMeal = new Button("Add To Meal");
-		addtoMeal.setLayoutX(5);
-		addtoMeal.setLayoutY(10);
+		addtoMeal.setLayoutX(240);
+		addtoMeal.setLayoutY(47);
 		
 		Button applyQuery = new Button("Apply Query");
 		applyQuery.setLayoutX(350);
@@ -159,7 +206,16 @@ public class GUI {
 		removeFood.setLayoutX(575);
 		removeFood.setLayoutY(47);
 		
-		bottomPane.getChildren().addAll(addtoMeal, applyQuery, viewMealSummary, resetFilter, removeFood);
+		addtoMeal.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			 public void handle(ActionEvent e) {
+				FoodItem newFood = new FoodItem("" + userId, addFoodName.getText());
+				userId++;
+				foodList.add(newFood);
+			}
+		});
+		
+		bottomPane.getChildren().addAll(addFoodName, addCalorie, addFat, addCarbonHydrate, addFiber, addProtein, addtoMeal, applyQuery, viewMealSummary, resetFilter, removeFood);
 		return bottomPane;
 	}
 }
