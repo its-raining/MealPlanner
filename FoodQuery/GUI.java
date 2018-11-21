@@ -93,21 +93,21 @@ public class GUI {
 		VBox leftVbox = new VBox();
 		final Label myMeal = new Label("Food List");
 		myMeal.setFont(new Font("Arial", 25));
-		ScrollPane foodListPane = new ScrollPane();
+		Pane foodListPane = new Pane();
 		
 		TableView<FoodItem> foodView = new TableView<FoodItem>();
 		
 		foodView.setEditable(false);
-		foodView.setPrefSize(340, 500);
-		foodView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		foodView.setPrefSize(340, 440);
+		foodView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 		
 		TableColumn<FoodItem, String> nameCol = new TableColumn<>("Food Name");
 		nameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
 		foodView.getColumns().addAll(nameCol);	
 		foodView.setItems(foodList);
 		
-		foodListPane.setContent(foodView);
-		foodListPane.getStyleClass().add("scrollpane");				
+		foodListPane.getChildren().addAll(myMeal, foodView);
+		foodListPane.setPrefSize(350,450);
 		
 		leftVbox.setAlignment(Pos.CENTER);
 		leftVbox.getChildren().addAll(myMeal, foodListPane);
@@ -119,12 +119,12 @@ public class GUI {
 		VBox filterVbox = new VBox();
 		final Label filters = new Label("Filters");
 		filters.setFont(new Font("Arial", 25));
-		ScrollPane filterPane = new ScrollPane();
+		Pane filterPane = new Pane();
 		
 		TableView<String> filterView = new TableView<String>();
 		
 		filterView.setEditable(false);
-		filterView.setPrefSize(225, 500);
+		filterView.setPrefSize(220, 440);
 		filterView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		TableColumn<String, String> nutrientCol = new TableColumn<String, String>("Nutrient");
@@ -132,7 +132,8 @@ public class GUI {
 
 		filterView.getColumns().addAll(nutrientCol, rangeCol);
 		
-		filterPane.setContent(filterView);
+		filterPane.getChildren().addAll(filters, filterView);
+		filterPane.setPrefSize(220,450);
 		filterPane.getStyleClass().add("filterpane");
 		
 		filterVbox.setAlignment(Pos.CENTER);
@@ -145,18 +146,20 @@ public class GUI {
 		VBox myMealVbox = new VBox();
 		final Label myMeal = new Label("My Meal");
 		myMeal.setFont(new Font("Arial", 25));
-		ScrollPane rightMealPane = new ScrollPane();
+		Pane rightMealPane = new Pane();
 		
 		TableView<FoodItem> myMealView = new TableView<FoodItem>();
 		
 		myMealView.setEditable(false);
-		myMealView.setPrefSize(225, 500);
+		myMealView.setPrefSize(220, 440);
 		myMealView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		TableColumn<FoodItem, String> nameCol = new TableColumn<>("My Food Name");
 		
-		myMealView.getColumns().addAll(nameCol);		
-		rightMealPane.setContent(myMealView);
+		myMealView.getColumns().addAll(nameCol);
+		rightMealPane.getChildren().addAll(myMealView, myMeal);
+		rightMealPane.setPrefSize(220,450);
+		
 		rightMealPane.getStyleClass().add("mymealpane");
 		
 		myMealVbox.setAlignment(Pos.CENTER);
@@ -195,7 +198,7 @@ public class GUI {
 		
 		final TextField addFiber = new TextField();
 		addFiber.setPromptText("Fiber");
-		addFiber.setLayoutX(78);
+		addFiber.setLayoutX(76);
 		addFiber.setLayoutY(47);
 		addFiber.setMaxWidth(70);
 		
@@ -206,12 +209,13 @@ public class GUI {
 		addProtein.setMaxWidth(75);
 		
 		Button addtoFoodList = new Button("Add to List");
-		addtoFoodList.setLayoutX(151);
-		addtoFoodList.setLayoutY(47);
+		addtoFoodList.setLayoutX(148);
+		addtoFoodList.setLayoutY(47);		
 		
 		Button addtoMeal = new Button("Add To Meal");
 		addtoMeal.setLayoutX(240);
 		addtoMeal.setLayoutY(47);
+		addtoMeal.setMaxWidth(105);
 		
 		Button applyQuery = new Button("Apply Query");
 		applyQuery.setLayoutX(350);
