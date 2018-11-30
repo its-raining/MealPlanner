@@ -80,8 +80,13 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public List<FoodItem> filterByName(String substring) {
-		// TODO : Complete
-		return null;
+		List<FoodItem> filteredList = new ArrayList<FoodItem>();
+		for (int i = 0; i < foodItemList.size(); i++) {
+			if (foodItemList.get(i).getName().contains(substring)) {
+				filteredList.add(foodItemList.get(i));
+			}
+		}
+		return filteredList;
 	}
 
 	/*
@@ -91,7 +96,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public List<FoodItem> filterByNutrients(List<String> rules) {
-		// TODO : Complete
+		
 		return null;
 	}
 

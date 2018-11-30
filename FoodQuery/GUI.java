@@ -16,6 +16,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
@@ -29,6 +30,7 @@ import javafx.stage.Stage;
 public class GUI {
 		
 	private static TableView<FoodItem> foodView;
+	private static TableView<FoodItem> myMealView;
 	private static ObservableList<FoodItem> foodList = FXCollections.observableArrayList();
 	private static FoodData foodData = new FoodData();
 	private static final Comparator<FoodItem> FOOD_COMPARATOR = new Comparator<FoodItem>() {
@@ -37,6 +39,10 @@ public class GUI {
 			return food1.getName().compareTo(food2.getName());
 		}
 	};
+	
+	private static MealData mealData = new MealData();
+	private static ObservableList<FoodItem> mealList = FXCollections.observableArrayList();
+
 
 	public static BorderPane setupGUI(BorderPane root) {
 				
@@ -78,6 +84,16 @@ public class GUI {
 			}
 		});
 		
+		save.setOnAction(new EventHandler<ActionEvent>() {
+			public void handle(ActionEvent t) {
+				FileChooser fileChooser = new FileChooser();
+				File file = fileChooser.showSaveDialog(new Stage());
+				if (file != null) {
+					foodData.saveFoodItems(file.getAbsolutePath());				
+				}
+			}
+		});
+		
 		fileMenu.getItems().add(load);
 		fileMenu.getItems().add(save);
 		
@@ -100,8 +116,8 @@ public class GUI {
 		myMeal.setFont(new Font("Arial", 25));
 		Pane foodListPane = new Pane();
 		
-		TableView<FoodItem> foodView = new TableView<FoodItem>();
-		
+		foodView = new TableView<FoodItem>();
+
 		foodView.setEditable(false);
 		foodView.setPrefSize(340, 440);
 		foodView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
@@ -154,7 +170,7 @@ public class GUI {
 		myMeal.setFont(new Font("Arial", 25));
 		Pane rightMealPane = new Pane();
 		
-		TableView<FoodItem> myMealView = new TableView<FoodItem>();
+		myMealView = new TableView<FoodItem>();
 		
 		myMealView.setEditable(false);
 		myMealView.setPrefSize(220, 440);
@@ -162,9 +178,19 @@ public class GUI {
 		
 		TableColumn<FoodItem, String> nameCol = new TableColumn<>("My Food Name");
 		
-		myMealView.getColumns().addAll(nameCol);
-		rightMealPane.getChildren().addAll(myMealView, myMeal);
+		//
+		nameCol.setCellValueFactory(f -> new SimpleStringProperty(f.getValue().getName()));
+		nameCol.setPrefWidth(750);
+		myMealView.getColumns().addAll(nameCol);	
+		myMealView.setItems(mealList);
+		
+		rightMealPane.getChildren().addAll(myMeal, myMealView);
 		rightMealPane.setPrefSize(220,450);
+		//
+		
+		//myMealView.getColumns().addAll(nameCol);
+		//rightMealPane.getChildren().addAll(myMealView, myMeal);
+		//rightMealPane.setPrefSize(220,450);
 		
 		rightMealPane.getStyleClass().add("mymealpane");
 		
@@ -187,6 +213,16 @@ public class GUI {
 		addtoMeal.setLayoutY(47);
 		addtoMeal.setMaxWidth(105);
 		
+		addtoMeal.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			 public void handle(ActionEvent e) {				
+				mealData.addFoodItem(foodView.getSelectionModel().getSelectedItem());
+				for (FoodItem myfood : mealData.getMealList()) {
+					mealList.add(myfood);
+				}
+			}
+		});	
+		
 		Button applyQuery = new Button("Apply Query");
 		applyQuery.setLayoutX(350);
 		applyQuery.setLayoutY(10);
@@ -194,6 +230,13 @@ public class GUI {
 		Button viewMealSummary = new Button("View Meal Summary");
 		viewMealSummary.setLayoutX(575);
 		viewMealSummary.setLayoutY(10);
+		
+		addtoMeal.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			 public void handle(ActionEvent e) {
+				
+			}
+		});	
 		
 		Button resetFilter = new Button("Reset Filter");
 		resetFilter.setLayoutX(350);
@@ -203,11 +246,18 @@ public class GUI {
 		removeFood.setLayoutX(575);
 		removeFood.setLayoutY(47);
 		
+		addtoMeal.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			 public void handle(ActionEvent e) {
+				
+			}
+		});	
+		
 		addtoFoodList.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			 public void handle(ActionEvent e) {
 				FoodItemAddForm foodItemAddForm = new FoodItemAddForm();
-				foodItemAddForm.start(foodList, foodData);
+				foodItemAddForm.start(foodList, foodData, FOOD_COMPARATOR);
 				
 				Collections.sort(foodList, FOOD_COMPARATOR);
 			}

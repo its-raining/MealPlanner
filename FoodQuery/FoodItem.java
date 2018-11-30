@@ -67,7 +67,7 @@ public class FoodItem {
 	 * updates its value.
 	 */
 	public void addNutrient(String name, double value) {
-		this.nutrients.put(name, value);
+		this.nutrients.put(name.toLowerCase(), value);
 	}
 
 	/**

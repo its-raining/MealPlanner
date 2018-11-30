@@ -1,6 +1,8 @@
 package application;
 
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -29,7 +31,7 @@ public class FoodItemAddForm {
 	private ArrayList<Label> labelNames;       
 	private ArrayList<TextField> inputValues; 
 	
-	public void start(ObservableList<FoodItem> foodList, FoodData foodData) {
+	public void start(ObservableList<FoodItem> foodList, FoodData foodData, Comparator<FoodItem> foodComparator) {
         Stage stage = new Stage();
         stage.setTitle("Add Food Item");
         
@@ -51,7 +53,7 @@ public class FoodItemAddForm {
         cancelButton = new Button("Cancel");
         
         handleCancel(cancelButton, stage);
-        handleOK(okayButton, stage, foodList, foodData);
+        handleOK(okayButton, stage, foodList, foodData, foodComparator);
         
         oknCancel.setSpacing(30);
         oknCancel.getChildren().addAll(okayButton, cancelButton);
@@ -93,7 +95,7 @@ public class FoodItemAddForm {
 		});
 	}
 	
-	public void handleOK(Button OK, Stage stage,ObservableList<FoodItem> foodList, FoodData foodData) {
+	public void handleOK(Button OK, Stage stage,ObservableList<FoodItem> foodList, FoodData foodData, Comparator<FoodItem> foodComparator) {
 		OK.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent e) {
@@ -119,14 +121,14 @@ public class FoodItemAddForm {
 				    FoodItem foodItem = new FoodItem(foodID, foodName);
 				    foodItem.addNutrient("calories", calories);
 				    foodItem.addNutrient("fat", fat);
-				    foodItem.addNutrient("carb", carb);
+				    foodItem.addNutrient("carbonhydrate", carb);
 				    foodItem.addNutrient("fiber", fiber);
 				    foodItem.addNutrient("protein", protein);
 				    
 				    // adds the new food item to each list
 				    foodList.add(foodItem);
 				    foodData.addFoodItem(foodItem);
-				    
+				    Collections.sort(foodList, foodComparator);
 /*				    for (FoodItem f : foodList) {
 				    	System.out.print(f.getID() + " " + f.getName() + ": ");
 				    	System.out.print(f.getNutrientValue("calories") + " ");
