@@ -1,6 +1,9 @@
 package application;
 
 import java.io.File;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
@@ -13,12 +16,9 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
@@ -30,8 +30,13 @@ public class GUI {
 		
 	private static TableView<FoodItem> foodView;
 	private static ObservableList<FoodItem> foodList = FXCollections.observableArrayList();
-	//private static int userId=0;
 	private static FoodData foodData = new FoodData();
+	private static final Comparator<FoodItem> FOOD_COMPARATOR = new Comparator<FoodItem>() {
+		@Override
+		public int compare(FoodItem food1, FoodItem food2) {
+			return food1.getName().compareTo(food2.getName());
+		}
+	};
 
 	public static BorderPane setupGUI(BorderPane root) {
 				
@@ -202,7 +207,9 @@ public class GUI {
 			@Override
 			 public void handle(ActionEvent e) {
 				FoodItemAddForm foodItemAddForm = new FoodItemAddForm();
-				foodItemAddForm.start();
+				foodItemAddForm.start(foodList, foodData);
+				
+				Collections.sort(foodList, FOOD_COMPARATOR);
 			}
 		});		
 		
