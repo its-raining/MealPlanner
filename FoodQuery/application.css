@@ -25,3 +25,7 @@
 	-fx-min-height: 450;
 	-fx-max-height: 450;
 }
+
+.table-view .column-header .label{
+	-fx-alignment: center-left;
+}

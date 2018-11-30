@@ -30,7 +30,7 @@ public class GUI {
 		
 	private static TableView<FoodItem> foodView;
 	private static ObservableList<FoodItem> foodList = FXCollections.observableArrayList();
-	private static int userId=0;
+	//private static int userId=0;
 	private static FoodData foodData = new FoodData();
 
 	public static BorderPane setupGUI(BorderPane root) {
@@ -103,6 +103,7 @@ public class GUI {
 		
 		TableColumn<FoodItem, String> nameCol = new TableColumn<>("Food Name");
 		nameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
+		nameCol.setPrefWidth(750);
 		foodView.getColumns().addAll(nameCol);	
 		foodView.setItems(foodList);
 		
@@ -170,43 +171,7 @@ public class GUI {
 	
 	private static Pane setBottomButtons() {
 		Pane bottomPane = new Pane();		
-		bottomPane.setId("bottompane");
-				
-		final TextField addFoodName = new TextField();
-		addFoodName.setPromptText("Food Name");
-		addFoodName.setLayoutX(5);
-		addFoodName.setLayoutY(10);
-		addFoodName.setMaxWidth(100);
-		
-		final TextField addCalorie = new TextField();
-		addCalorie.setPromptText("Calorie");
-		addCalorie.setLayoutX(113);
-		addCalorie.setLayoutY(10);
-		addCalorie.setMaxWidth(70);
-		
-		final TextField addFat = new TextField();
-		addFat.setPromptText("Fat");
-		addFat.setLayoutX(190);
-		addFat.setLayoutY(10);
-		addFat.setMaxWidth(70);
-		
-		final TextField addCarbonHydrate = new TextField();
-		addCarbonHydrate.setPromptText("Carbs");
-		addCarbonHydrate.setLayoutX(5);
-		addCarbonHydrate.setLayoutY(47);
-		addCarbonHydrate.setMaxWidth(70);
-		
-		final TextField addFiber = new TextField();
-		addFiber.setPromptText("Fiber");
-		addFiber.setLayoutX(76);
-		addFiber.setLayoutY(47);
-		addFiber.setMaxWidth(70);
-		
-		final TextField addProtein = new TextField();
-		addProtein.setPromptText("Protein");
-		addProtein.setLayoutX(265);
-		addProtein.setLayoutY(10);
-		addProtein.setMaxWidth(75);
+		bottomPane.setId("bottompane");		
 		
 		Button addtoFoodList = new Button("Add to List");
 		addtoFoodList.setLayoutX(148);
@@ -236,13 +201,12 @@ public class GUI {
 		addtoFoodList.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			 public void handle(ActionEvent e) {
-				FoodItem newFood = new FoodItem("" + userId, addFoodName.getText());
-				userId++;
-				foodList.add(newFood);
+				FoodItemAddForm foodItemAddForm = new FoodItemAddForm();
+				foodItemAddForm.start();
 			}
 		});		
 		
-		bottomPane.getChildren().addAll(addFoodName, addCalorie, addFat, addCarbonHydrate, addFiber, addProtein, addtoMeal, addtoFoodList, applyQuery, viewMealSummary, resetFilter, removeFood);
+		bottomPane.getChildren().addAll(addtoMeal, addtoFoodList, applyQuery, viewMealSummary, resetFilter, removeFood);
 		return bottomPane;
 	}
 }
