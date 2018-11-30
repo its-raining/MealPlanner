@@ -174,11 +174,11 @@ public class GUI {
 		bottomPane.setId("bottompane");		
 		
 		Button addtoFoodList = new Button("Add to List");
-		addtoFoodList.setLayoutX(148);
-		addtoFoodList.setLayoutY(47);		
+		addtoFoodList.setLayoutX(10);
+		addtoFoodList.setLayoutY(10);		
 		
 		Button addtoMeal = new Button("Add To Meal");
-		addtoMeal.setLayoutX(240);
+		addtoMeal.setLayoutX(10);
 		addtoMeal.setLayoutY(47);
 		addtoMeal.setMaxWidth(105);
 		
