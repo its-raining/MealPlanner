@@ -6,12 +6,10 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
-import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
-import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class FoodItemAddForm {	
@@ -41,7 +39,18 @@ public class FoodItemAddForm {
         	 gridPane.add(labelNames.get(i), 0, i);
         	 gridPane.add(inputValues.get(i), 1, i);
         }
-       
+        
+        //gridPane.setGridLinesVisible(true);
+        HBox oknCancel = new HBox();
+        okayButton = new Button("OK");
+        cancelButton = new Button("Cancel");
+        
+        oknCancel.setSpacing(30);
+        oknCancel.getChildren().addAll(okayButton, cancelButton);
+        gridPane.add(oknCancel, 1, 7);
+        
+        clearButton = new Button("Clear");
+        gridPane.add(clearButton, 2, 7);
         
         Scene scene = new Scene(gridPane,400,300);
         stage.setScene(scene);
