@@ -3,8 +3,10 @@ package application;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Scanner;
 import java.io.File;
+import java.io.PrintWriter;
 import java.io.FileNotFoundException;
 import javafx.collections.FXCollections;
 
@@ -26,7 +28,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 * Public constructor
 	 */
 	public FoodData() {
-		this.foodItemList = new ArrayList<FoodItem>();
+		this.foodItemList = FXCollections.observableArrayList();
 		this.indexes = new HashMap<String, BPTree<Double, FoodItem>>();
 	}
 
@@ -43,8 +45,6 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		try {			
 			File inFile = new File(filePath);
 			Scanner readFile = new Scanner(inFile);
-			int lineNum = 0;// Index to modify in foodItemList
-			
 			while (readFile.hasNextLine()) {
 				
 				String[] currLine = readFile.nextLine().split(",");
@@ -54,18 +54,18 @@ public class FoodData implements FoodDataADT<FoodItem> {
 				}
 				
 				// Sets ID and name
-				foodItemList.add(new FoodItem(currLine[0], currLine[1]));
+				FoodItem tempFood = (new FoodItem(currLine[0], currLine[1]));
 				
 				// Adds Nutrients by name/value pairs
 				for (int i = 2; i < currLine.length; i += 2) {
-					foodItemList.get(lineNum).addNutrient(currLine[i], Double.parseDouble(currLine[i + 1]));
+					tempFood.addNutrient(currLine[i], Double.parseDouble(currLine[i + 1]));
 					
 					if (i + 1 == currLine.length - 2) {						
-						// breaks loops on improper files
+						// breaks loops on improper file format
 						break;
 					}
 				}
-				lineNum++;
+				this.addFoodItem(tempFood);
 			}
 			readFile.close();
 		} catch (FileNotFoundException e) {
@@ -102,7 +102,14 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public void addFoodItem(FoodItem foodItem) {
-		this.foodItemList.add(foodItem);
+	    for (int i = 0; i < foodItemList.size(); i++) {
+	        if (foodItemList.get(i).getName().compareTo(foodItem.getName()) > 0) {
+	            foodItemList.add(i, foodItem);
+	            return;
+	        }
+	    }
+	    //If greater than all food in list, add to end
+	    foodItemList.add(foodItem);
 	}
 
 	/*
@@ -117,7 +124,30 @@ public class FoodData implements FoodDataADT<FoodItem> {
 
 	@Override
 	public void saveFoodItems(String filename) {
-		// TODO Auto-generated method stub
+		try {
+		    File outFile = new File(filename);
+		    if (!outFile.exists()) {
+		        outFile.createNewFile();
+		    }
+		    PrintWriter writer = new PrintWriter(outFile);
+		    for (int i = 0; i < foodItemList.size(); i++) {
+		        writer.print(foodItemList.get(i).getID() + ",");
+		        writer.print(foodItemList.get(i).getName());
+		        String nutrients = "";
+		        HashMap<String, Double> nutrientMap = foodItemList.get(i).getNutrients();
+		        for (Map.Entry<String, Double> entry : nutrientMap.entrySet()) {
+		            nutrients += "," + entry.getKey() + "," + entry.getValue();
+		        }
+		        writer.println(nutrients);
+		    }
+		    writer.flush();
+		    writer.close();
+		    
+		    
+		}
+		catch(Exception e) {
+		    System.out.println("Hey Idiot");
+		}
 		
 	}
 }
