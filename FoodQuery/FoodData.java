@@ -107,11 +107,14 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public void addFoodItem(FoodItem foodItem) {
+		
 	    for (int i = 0; i < foodItemList.size(); i++) {
+	    	
 	        if (foodItemList.get(i).getName().compareTo(foodItem.getName()) > 0) {
 	            foodItemList.add(i, foodItem);
 	            return;
 	        }
+	        
 	    }
 	    //If greater than all food in list, add to end
 	    foodItemList.add(foodItem);
@@ -129,20 +132,29 @@ public class FoodData implements FoodDataADT<FoodItem> {
 
 	@Override
 	public void saveFoodItems(String filename) {
+		
 		try {
+			
 		    File outFile = new File(filename);
+		    
 		    if (!outFile.exists()) {
 		        outFile.createNewFile();
 		    }
+		    
 		    PrintWriter writer = new PrintWriter(outFile);
 		    for (int i = 0; i < foodItemList.size(); i++) {
+		    	
 		        writer.print(foodItemList.get(i).getID() + ",");
 		        writer.print(foodItemList.get(i).getName());
+		        
 		        String nutrients = "";
 		        HashMap<String, Double> nutrientMap = foodItemList.get(i).getNutrients();
+
+		        // FIXME: NEED TO CONVERT THIS TO LIST TO MATCH CSV FORMAT
 		        for (Map.Entry<String, Double> entry : nutrientMap.entrySet()) {
 		            nutrients += "," + entry.getKey() + "," + entry.getValue();
 		        }
+		        
 		        writer.println(nutrients);
 		    }
 		    writer.flush();

@@ -121,7 +121,7 @@ public class FoodItemAddForm {
 				    FoodItem foodItem = new FoodItem(foodID, foodName);
 				    foodItem.addNutrient("calories", calories);
 				    foodItem.addNutrient("fat", fat);
-				    foodItem.addNutrient("carbonhydrate", carb);
+				    foodItem.addNutrient("carbohydrate", carb);
 				    foodItem.addNutrient("fiber", fiber);
 				    foodItem.addNutrient("protein", protein);
 				    

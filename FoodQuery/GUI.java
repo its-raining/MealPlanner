@@ -98,11 +98,9 @@ public class GUI {
 		fileMenu.getItems().add(save);
 		
 		// items underneath the FoodList menu
-		MenuItem addFood = new MenuItem("Add New Food");
 		MenuItem addRule = new MenuItem("Add New Rule");
 		MenuItem removeRule = new MenuItem("Remove Rule");
 		
-		foodMenu.getItems().add(addFood);
 		foodMenu.getItems().add(addRule);
 		foodMenu.getItems().add(removeRule);
 		
@@ -122,7 +120,7 @@ public class GUI {
 		foodView.setPrefSize(340, 440);
 		foodView.setColumnResizePolicy(TableView.UNCONSTRAINED_RESIZE_POLICY);
 		
-		TableColumn<FoodItem, String> nameCol = new TableColumn<>("Food Name");
+		TableColumn<FoodItem, String> nameCol = new TableColumn<FoodItem, String>("Food Name");
 		nameCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue().getName()));
 		nameCol.setPrefWidth(750);
 		foodView.getColumns().addAll(nameCol);	
@@ -176,9 +174,8 @@ public class GUI {
 		myMealView.setPrefSize(220, 440);
 		myMealView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
-		TableColumn<FoodItem, String> nameCol = new TableColumn<>("My Food Name");
+		TableColumn<FoodItem, String> nameCol = new TableColumn<FoodItem, String>("My Food Name");
 		
-		//
 		nameCol.setCellValueFactory(f -> new SimpleStringProperty(f.getValue().getName()));
 		nameCol.setPrefWidth(750);
 		myMealView.getColumns().addAll(nameCol);	
@@ -186,11 +183,6 @@ public class GUI {
 		
 		rightMealPane.getChildren().addAll(myMeal, myMealView);
 		rightMealPane.setPrefSize(220,450);
-		//
-		
-		//myMealView.getColumns().addAll(nameCol);
-		//rightMealPane.getChildren().addAll(myMealView, myMeal);
-		//rightMealPane.setPrefSize(220,450);
 		
 		rightMealPane.getStyleClass().add("mymealpane");
 		
@@ -217,9 +209,7 @@ public class GUI {
 			@Override
 			 public void handle(ActionEvent e) {				
 				mealData.addFoodItem(foodView.getSelectionModel().getSelectedItem());
-				for (FoodItem myfood : mealData.getMealList()) {
-					mealList.add(myfood);
-				}
+				mealList.add(foodView.getSelectionModel().getSelectedItem());
 			}
 		});	
 		
@@ -231,12 +221,13 @@ public class GUI {
 		viewMealSummary.setLayoutX(575);
 		viewMealSummary.setLayoutY(10);
 		
-		addtoMeal.setOnAction(new EventHandler<ActionEvent>() {
+		viewMealSummary.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			 public void handle(ActionEvent e) {
-				
+				MealAnalysisPane mealAnalysisPane = new MealAnalysisPane();
+				mealAnalysisPane.start(mealData);
 			}
-		});	
+		});
 		
 		Button resetFilter = new Button("Reset Filter");
 		resetFilter.setLayoutX(350);
@@ -246,12 +237,13 @@ public class GUI {
 		removeFood.setLayoutX(575);
 		removeFood.setLayoutY(47);
 		
-		addtoMeal.setOnAction(new EventHandler<ActionEvent>() {
+		removeFood.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			 public void handle(ActionEvent e) {
-				
+				mealData.removeFoodItem(myMealView.getSelectionModel().getSelectedItem());
+				mealList.remove(myMealView.getSelectionModel().getSelectedItem());
 			}
-		});	
+		});
 		
 		addtoFoodList.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
