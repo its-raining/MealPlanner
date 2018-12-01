@@ -1,7 +1,6 @@
 package application;
 
 import java.io.File;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -16,7 +15,6 @@ import javafx.scene.control.Label;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.SelectionModel;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.layout.BorderPane;
@@ -30,9 +28,11 @@ import javafx.stage.Stage;
 public class GUI {
 		
 	private static TableView<FoodItem> foodView;
-	private static TableView<FoodItem> myMealView;
+	private static TableView<FoodItem> mealView;
 	private static ObservableList<FoodItem> foodList = FXCollections.observableArrayList();
+	private static ObservableList<FoodItem> mealList = FXCollections.observableArrayList();
 	private static FoodData foodData = new FoodData();
+	private static MealData mealData = new MealData();
 	private static final Comparator<FoodItem> FOOD_COMPARATOR = new Comparator<FoodItem>() {
 		@Override
 		public int compare(FoodItem food1, FoodItem food2) {
@@ -40,10 +40,11 @@ public class GUI {
 		}
 	};
 	
-	private static MealData mealData = new MealData();
-	private static ObservableList<FoodItem> mealList = FXCollections.observableArrayList();
-
-
+	/**
+	 * 
+	 * @param root
+	 * @return
+	 */
 	public static BorderPane setupGUI(BorderPane root) {
 				
 		root.setTop(setTopMenu());
@@ -55,11 +56,15 @@ public class GUI {
 		return root;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	private static MenuBar setTopMenu() {
 		
 		// creates the File and FoodList drop-downs
 		final Menu fileMenu = new Menu("File");
-		final Menu foodMenu = new Menu("FoodList");
+		final Menu foodMenu = new Menu("Filters");
 		
 		// spawns menu bar at top of screen
 		MenuBar menuBar = new MenuBar();
@@ -107,6 +112,10 @@ public class GUI {
 		return menuBar;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	private static VBox setLeftFoodPane() {
 		VBox leftVbox = new VBox();
@@ -133,7 +142,11 @@ public class GUI {
 		leftVbox.getChildren().addAll(myMeal, foodListPane);
 		return leftVbox;
 	}
-
+	
+	/**
+	 * 
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	private static VBox setFilterPane() {
 		VBox filterVbox = new VBox();
@@ -161,6 +174,10 @@ public class GUI {
 		return filterVbox;
 	}
 	
+	/**
+	 * 
+	 * @return
+	 */
 	@SuppressWarnings("unchecked")
 	private static VBox setRightMealPane() {
 		VBox myMealVbox = new VBox();
@@ -168,20 +185,20 @@ public class GUI {
 		myMeal.setFont(new Font("Arial", 25));
 		Pane rightMealPane = new Pane();
 		
-		myMealView = new TableView<FoodItem>();
+		mealView = new TableView<FoodItem>();
 		
-		myMealView.setEditable(false);
-		myMealView.setPrefSize(220, 440);
-		myMealView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
+		mealView.setEditable(false);
+		mealView.setPrefSize(220, 440);
+		mealView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		TableColumn<FoodItem, String> nameCol = new TableColumn<FoodItem, String>("My Food Name");
 		
 		nameCol.setCellValueFactory(f -> new SimpleStringProperty(f.getValue().getName()));
 		nameCol.setPrefWidth(750);
-		myMealView.getColumns().addAll(nameCol);	
-		myMealView.setItems(mealList);
+		mealView.getColumns().addAll(nameCol);	
+		mealView.setItems(mealList);
 		
-		rightMealPane.getChildren().addAll(myMeal, myMealView);
+		rightMealPane.getChildren().addAll(myMeal, mealView);
 		rightMealPane.setPrefSize(220,450);
 		
 		rightMealPane.getStyleClass().add("mymealpane");
@@ -192,19 +209,36 @@ public class GUI {
 		return myMealVbox;
 	}
 	
+	/**
+	 * 
+	 * @return Bottom pane with all the buttons
+	 */
 	private static Pane setBottomButtons() {
 		Pane bottomPane = new Pane();		
 		bottomPane.setId("bottompane");		
 		
 		Button addtoFoodList = new Button("Add to List");
 		addtoFoodList.setLayoutX(10);
-		addtoFoodList.setLayoutY(10);		
+		addtoFoodList.setLayoutY(10);
+		
+		//add to list button's functionality
+		addtoFoodList.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			 public void handle(ActionEvent e) {
+				FoodItemAddForm foodItemAddForm = new FoodItemAddForm();
+				foodItemAddForm.start(foodList, foodData, FOOD_COMPARATOR);
+				
+				// FIXME MAY NOT BE NEEDED
+				Collections.sort(foodList, FOOD_COMPARATOR);
+			}
+		});
 		
 		Button addtoMeal = new Button("Add To Meal");
 		addtoMeal.setLayoutX(10);
 		addtoMeal.setLayoutY(47);
 		addtoMeal.setMaxWidth(105);
 		
+		//add to meal button's functionality
 		addtoMeal.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			 public void handle(ActionEvent e) {				
@@ -240,21 +274,11 @@ public class GUI {
 		removeFood.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			 public void handle(ActionEvent e) {
-				mealData.removeFoodItem(myMealView.getSelectionModel().getSelectedItem());
-				mealList.remove(myMealView.getSelectionModel().getSelectedItem());
+				mealData.removeFoodItem(mealView.getSelectionModel().getSelectedItem());
+				mealList.remove(mealView.getSelectionModel().getSelectedItem());
 			}
 		});
-		
-		addtoFoodList.setOnAction(new EventHandler<ActionEvent>() {
-			@Override
-			 public void handle(ActionEvent e) {
-				FoodItemAddForm foodItemAddForm = new FoodItemAddForm();
-				foodItemAddForm.start(foodList, foodData, FOOD_COMPARATOR);
-				
-				Collections.sort(foodList, FOOD_COMPARATOR);
-			}
-		});		
-		
+								
 		bottomPane.getChildren().addAll(addtoMeal, addtoFoodList, applyQuery, viewMealSummary, resetFilter, removeFood);
 		return bottomPane;
 	}

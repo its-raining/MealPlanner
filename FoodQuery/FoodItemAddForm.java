@@ -20,7 +20,7 @@ import javafx.scene.layout.HBox;
 import javafx.stage.Stage;
 
 public class FoodItemAddForm {	
-	
+	//user ID will automatically assigned in back-end
 	private static int userID;
 	
 	private Button okayButton;
@@ -35,26 +35,32 @@ public class FoodItemAddForm {
         Stage stage = new Stage();
         stage.setTitle("Add Food Item");
         
+        //set up the grid pane
         GridPane gridPane = new GridPane();
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setHgap(10);
         gridPane.setVgap(10);
         gridPane.setPadding(new Insets(25, 25, 25, 25));
- 
+        
+        //add labels to nutrient arraylist
         addNutrientLabels();
         
+        //add s and textfields to grid pane
         for(int i = 0; i < labelNames.size(); i++) {
         	 gridPane.add(labelNames.get(i), 0, i);
         	 gridPane.add(inputValues.get(i), 1, i);
         }
         
+        //an hbox that put ok and cancel button together
         HBox oknCancel = new HBox();
         okayButton = new Button("OK");
         cancelButton = new Button("Cancel");
         
+        //the functionalities of ok and cancel button
         handleCancel(cancelButton, stage);
         handleOK(okayButton, stage, foodList, foodData, foodComparator);
         
+        //add two buttons to hbox
         oknCancel.setSpacing(30);
         oknCancel.getChildren().addAll(okayButton, cancelButton);
         gridPane.add(oknCancel, 1, 7);
@@ -62,6 +68,7 @@ public class FoodItemAddForm {
         clearButton = new Button("Clear");
         handleClear(clearButton);
         
+        //add clear button to gridpane
         gridPane.add(clearButton, 2, 7);
         
         Scene scene = new Scene(gridPane,400,300);
@@ -74,13 +81,13 @@ public class FoodItemAddForm {
 		inputValues = new ArrayList<TextField>();
 		
 		labelNames.add(new Label("Food Name:"));
-		//labelNames.add(new Label("Food ID:"));
 		labelNames.add(new Label("Calories:"));
 		labelNames.add(new Label("Fat:"));
 		labelNames.add(new Label("Carbs:"));
 		labelNames.add(new Label("Fiber:"));
 		labelNames.add(new Label("Protein:"));
 		
+		//add each textfield to inputValues arraylist
 		for (int i = 0; i < 6; i++) {
 			inputValues.add(new TextField());
 		}
@@ -95,19 +102,26 @@ public class FoodItemAddForm {
 		});
 	}
 	
+	/**
+	 * The functionality of ok button.
+	 * @param OK button
+	 * @param stage
+	 * @param foodList
+	 * @param foodData
+	 * @param foodComparator
+	 */
 	public void handleOK(Button OK, Stage stage,ObservableList<FoodItem> foodList, FoodData foodData, Comparator<FoodItem> foodComparator) {
 		OK.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent e) {
 				
 				try {
-					
+					//initialize food name and food id
 				    String foodName = inputValues.get(0).getText();
 				    String foodID = userID + "";
 				    
 				    // if the user doesn't type in a food name or id
-				    if (foodName.trim().equals("")) {
-				    	
+				    if (foodName.trim().equals("")) {				    	
 				    	throw new Exception();
 				    }
 				    
@@ -128,7 +142,10 @@ public class FoodItemAddForm {
 				    // adds the new food item to each list
 				    foodList.add(foodItem);
 				    foodData.addFoodItem(foodItem);
+				    
+				    // sort food list after insertion
 				    Collections.sort(foodList, foodComparator);
+				    
 /*				    for (FoodItem f : foodList) {
 				    	System.out.print(f.getID() + " " + f.getName() + ": ");
 				    	System.out.print(f.getNutrientValue("calories") + " ");
@@ -152,13 +169,14 @@ public class FoodItemAddForm {
 				    System.out.println("===========================");
 				    System.out.println();*/
 				    
+				    //increment userID after assigning
 				    userID++;
 				    
 				    stage.close();
 				    
 				    
 				} catch (NumberFormatException f) {
-					//System.out.println("User entered a string instead of a double");
+					//catch exception and pop-up an alert if user did not enter double for nutrient's value
 					Alert alert = new Alert(AlertType.INFORMATION);
 					alert.setTitle("Invalid Input");
 					alert.setHeaderText(null);
@@ -166,7 +184,7 @@ public class FoodItemAddForm {
 
 					alert.showAndWait();
 				} catch (Exception n) {
-					//System.out.println("Food Name isn't present");
+					//catch exception and pop-up an alert if user did not enter food name
 					Alert alert = new Alert(AlertType.INFORMATION);
 					alert.setTitle("Invalid Input");
 					alert.setHeaderText(null);
@@ -179,11 +197,15 @@ public class FoodItemAddForm {
 		});
 	}
 	
+	/**
+	 * Functionality of clear button, which sets textfields to empty string
+	 * @param clearButton
+	 */
 	public void handleClear(Button clearButton) {
 		clearButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent e) {
-				
+				//looping through textfield arraylist and set each of them to empty string
 				for (TextField tf: inputValues) {
 					tf.setText("");
 				}	
