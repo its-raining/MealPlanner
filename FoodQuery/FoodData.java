@@ -150,17 +150,16 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		    for (int i = 0; i < foodItemList.size(); i++) {
 		    	
 		        writer.print(foodItemList.get(i).getID() + ",");
-		        writer.print(foodItemList.get(i).getName());
+		        writer.print(foodItemList.get(i).getName() + ",");
 		        
-		        String nutrients = "";
 		        HashMap<String, Double> nutrientMap = foodItemList.get(i).getNutrients();
-
-		        // FIXME: NEED TO CONVERT THIS TO LIST TO MATCH CSV FORMAT
-		        for (Map.Entry<String, Double> entry : nutrientMap.entrySet()) {
-		            nutrients += "," + entry.getKey() + "," + entry.getValue();
-		        }
 		        
-		        writer.println(nutrients);
+		        writer.print("calories," + nutrientMap.get("calories") + ",");
+		        writer.print("fat," + nutrientMap.get("fat") + ",");
+		        writer.print("carbohydrate," + nutrientMap.get("carbohydrate") + ",");
+		        writer.print("fiber," + nutrientMap.get("fiber") + ",");
+		        writer.println("protein," + nutrientMap.get("protein"));
+		      
 		    }
 		    writer.flush();
 		    writer.close();
