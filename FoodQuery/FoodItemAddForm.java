@@ -72,8 +72,8 @@ public class FoodItemAddForm {
         cancelButton = new Button("Cancel");
         
         // the functionalities of ok and cancel button
-        handleCancel(cancelButton, stage);
-        handleOK(okayButton, stage, foodList, foodData, foodComparator);
+        handleCancel(stage);
+        handleOK(stage, foodList, foodData, foodComparator);
         
         // add two buttons to hbox
         oknCancel.setSpacing(30);
@@ -81,7 +81,7 @@ public class FoodItemAddForm {
         gridPane.add(oknCancel, 1, 7);
         
         clearButton = new Button("Clear");
-        handleClear(clearButton);
+        handleClear();
         
         // add clear button to gridpane
         gridPane.add(clearButton, 2, 7);
@@ -118,8 +118,8 @@ public class FoodItemAddForm {
 	 * @param cancel
 	 * @param stage
 	 */
-	public void handleCancel(Button cancel, Stage stage) {
-		cancel.setOnAction(new EventHandler<ActionEvent>(){
+	public void handleCancel(Stage stage) {
+		cancelButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent e) {
 				stage.close();
@@ -135,8 +135,8 @@ public class FoodItemAddForm {
 	 * @param foodData
 	 * @param foodComparator
 	 */
-	public void handleOK(Button OK, Stage stage,ObservableList<FoodItem> foodList, FoodData foodData, Comparator<FoodItem> foodComparator) {
-		OK.setOnAction(new EventHandler<ActionEvent>(){
+	public void handleOK(Stage stage,ObservableList<FoodItem> foodList, FoodData foodData, Comparator<FoodItem> foodComparator) {
+		okayButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent e) {
 				
@@ -204,7 +204,7 @@ public class FoodItemAddForm {
 	 * Functionality of clear button, which sets text fields to empty string
 	 * @param clearButton
 	 */
-	public void handleClear(Button clearButton) {
+	public void handleClear() {
 		clearButton.setOnAction(new EventHandler<ActionEvent>(){
 			@Override
 			public void handle(ActionEvent e) {

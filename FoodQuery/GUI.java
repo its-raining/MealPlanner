@@ -39,11 +39,16 @@ public class GUI {
 	// the private field of TableView for my meal list
 	private static TableView<FoodItem> mealView;
 	
+	private static TableView<String> filterView;
+	
 	// the private field of ObservableList for food list
 	private static ObservableList<FoodItem> foodList = FXCollections.observableArrayList();
 	
 	// the private field of ObservableList for my meal list
 	private static ObservableList<FoodItem> mealList = FXCollections.observableArrayList();
+	
+	// the private field of ObservableList for my filter list
+	private static ObservableList<String> filterList = FXCollections.observableArrayList();
 	
 	// the private field of FoodData for food list
 	private static FoodData foodData = new FoodData();
@@ -134,12 +139,25 @@ public class GUI {
 		fileMenu.getItems().add(save);
 		
 		// items underneath the FoodList menu
-		MenuItem addRule = new MenuItem("Add New Rule");
-		MenuItem removeRule = new MenuItem("Remove Rule");
+		MenuItem applyQuery = new MenuItem("Apply Query");
+		MenuItem resetFilter = new MenuItem("Reset Filter");
+		
+		// add to list button's functionality
+		resetFilter.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				filterList.clear();
+				
+				foodList.clear(); 				
+				for (FoodItem food : foodData.getAllFoodItems()) {
+					foodList.add(food);
+				}
+			}
+		});
 		
 		// add operations related to filters to foodMenu
-		foodMenu.getItems().add(addRule);
-		foodMenu.getItems().add(removeRule);
+		foodMenu.getItems().add(applyQuery);
+		foodMenu.getItems().add(resetFilter);
 		
 		return menuBar;
 	}
@@ -192,16 +210,22 @@ public class GUI {
 		Pane filterPane = new Pane();
 		
 		// set up the TableView for filters
-		TableView<String> filterView = new TableView<String>();
+		filterView = new TableView<String>();
 		filterView.setEditable(false);
 		filterView.setPrefSize(220, 440);
 		filterView.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY);
 		
 		
-		TableColumn<String, String> nutrientCol = new TableColumn<String, String>("Nutrient");
-		TableColumn<String, Double> rangeCol = new TableColumn<String, Double>("Range");
+		TableColumn<String, String> ruleCol = new TableColumn<String, String>("Rule");
+		
+		// lambda expression for adding food to the table
+	    ruleCol.setCellValueFactory(c -> new SimpleStringProperty(c.getValue()));
+				
+		// making sure enough space for food's name
+		ruleCol.setPrefWidth(750);
 
-		filterView.getColumns().addAll(nutrientCol, rangeCol);
+		filterView.getColumns().addAll(ruleCol);
+		filterView.setItems(filterList);
 		
 		// add title and TableView of filters to the pane
 		filterPane.getChildren().addAll(filters, filterView);
@@ -274,7 +298,7 @@ public class GUI {
 				foodItemAddForm.start(foodList, foodData, FOOD_COMPARATOR);
 				
 				// FIXME MAY NOT BE NEEDED
-				Collections.sort(foodList, FOOD_COMPARATOR);
+				// Collections.sort(foodList, FOOD_COMPARATOR);				
 			}
 		});
 		
@@ -293,10 +317,32 @@ public class GUI {
 			}
 		});	
 		
-		// the apply query button
-		Button applyQuery = new Button("Apply Query");
-		applyQuery.setLayoutX(350);
-		applyQuery.setLayoutY(10);
+		// the add new rule button
+		Button addNewRule = new Button("Add New Rule");
+		addNewRule.setLayoutX(350);
+		addNewRule.setLayoutY(10);
+		
+		// add new rule button's functionality
+		addNewRule.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				FilterRulesForm filterRuleForm = new FilterRulesForm();
+				filterRuleForm.start(filterList);
+			}
+		});
+		
+		// the remove rule button
+		Button removeRule = new Button("Remove Rule");
+		removeRule.setLayoutX(350);
+		removeRule.setLayoutY(47);
+		
+		// 
+		removeRule.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+				filterList.remove(filterView.getSelectionModel().getSelectedItem());
+			}
+		});
 		
 		// the view meal summary button
 		Button viewMealSummary = new Button("View Meal Summary");
@@ -311,11 +357,6 @@ public class GUI {
 				mealAnalysisPane.start(mealData);
 			}
 		});
-		
-		// the reset filter button
-		Button resetFilter = new Button("Reset Filter");
-		resetFilter.setLayoutX(350);
-		resetFilter.setLayoutY(47);
 		
 		// the remove food button
 		Button removeFood = new Button("Remove Food");
@@ -332,7 +373,7 @@ public class GUI {
 		});
 		
 		// add all components to bottom pane
-		bottomPane.getChildren().addAll(addtoMeal, addtoFoodList, applyQuery, viewMealSummary, resetFilter, removeFood);
+		bottomPane.getChildren().addAll(addtoMeal, addtoFoodList, addNewRule, viewMealSummary, removeRule, removeFood);
 		return bottomPane;
 	}
 }
