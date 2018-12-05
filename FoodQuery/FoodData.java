@@ -8,6 +8,7 @@ import java.util.Scanner;
 import java.io.File;
 import java.io.PrintWriter;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import javafx.collections.FXCollections;
 
 /**
@@ -32,6 +33,13 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	public FoodData() {
 		this.foodItemList = FXCollections.observableArrayList();
 		this.indexes = new HashMap<String, BPTree<Double, FoodItem>>();
+		
+		//Create all of our BPtrees
+		indexes.put("calories", new BPTree<Double, FoodItem>(3));
+		indexes.put("fat", new BPTree<Double, FoodItem>(3));
+		indexes.put("carbohydrate", new BPTree<Double, FoodItem>(3));
+		indexes.put("fiber", new BPTree<Double, FoodItem>(3));
+		indexes.put("protein", new BPTree<Double, FoodItem>(3));
 	}
 
 	/*
@@ -40,10 +48,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 * @see skeleton.FoodDataADT#loadFoodItems(java.lang.String)
 	 */
 	@Override
-	public void loadFoodItems(String filePath) {
-		foodItemList = FXCollections.observableArrayList();
-		indexes = new HashMap<String, BPTree<Double, FoodItem>>();
-		
+	public void loadFoodItems(String filePath) {		
 		try {			
 			File inFile = new File(filePath);
 			Scanner readFile = new Scanner(inFile);
@@ -100,8 +105,24 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public List<FoodItem> filterByNutrients(List<String> rules) {
-		
-		return null;
+	    //Holds the results of each rule being applied individually
+	    List <List<FoodItem>> rulesResults = new ArrayList<List<FoodItem>>();
+	    
+	    //range searches for each rule, and adds the result to rulesResults
+	    for (int i = 0; i < rules.size(); i++) {
+	        String[] currRule = rules.get(i).split(" ");
+	        rulesResults.add(indexes.get(currRule[0]).rangeSearch(Double.parseDouble(currRule[2]), currRule[1]));
+	    }
+	    
+	    //The list that is the intersection of the results
+	    List<FoodItem> filteredFoods = rulesResults.get(0);
+	    
+	    
+	    for (int i = 1; i < rulesResults.size(); i++) {
+	        filteredFoods.retainAll(rulesResults.get(i));
+	    }
+	    
+		return filteredFoods;
 	}
 
 	/*
@@ -123,6 +144,13 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	    }
 	    //If greater than all food in list, add to end
 	    foodItemList.add(foodItem);
+	    
+	    //Lastly, add to all BPtrees
+	    indexes.get("calories").insert(foodItem.getNutrientValue("calories"), foodItem);
+	    indexes.get("fat").insert(foodItem.getNutrientValue("fat"), foodItem);
+	    indexes.get("carbohydrate").insert(foodItem.getNutrientValue("carbohydrate"), foodItem);
+	    indexes.get("fiber").insert(foodItem.getNutrientValue("fiber"), foodItem);
+	    indexes.get("protein").insert(foodItem.getNutrientValue("protein"), foodItem);
 	}
 
 	/*
@@ -142,34 +170,36 @@ public class FoodData implements FoodDataADT<FoodItem> {
 			
 		    File outFile = new File(filename);
 		    
+		    //Prevent errors later by creating a new file if outFile is not found
 		    if (!outFile.exists()) {
 		        outFile.createNewFile();
 		    }
 		    
 		    PrintWriter writer = new PrintWriter(outFile);
-		    for (int i = 0; i < foodItemList.size(); i++) {
-		    	
+		    
+		    //Writes a new line in proper format for every food item
+		    for (int i = 0; i < foodItemList.size(); i++) {	
 		        writer.print(foodItemList.get(i).getID() + ",");
-		        writer.print(foodItemList.get(i).getName());
+		        writer.print(foodItemList.get(i).getName() + ",");
 		        
-		        String nutrients = "";
 		        HashMap<String, Double> nutrientMap = foodItemList.get(i).getNutrients();
-
-		        // FIXME: NEED TO CONVERT THIS TO LIST TO MATCH CSV FORMAT
-		        for (Map.Entry<String, Double> entry : nutrientMap.entrySet()) {
-		            nutrients += "," + entry.getKey() + "," + entry.getValue();
-		        }
 		        
-		        writer.println(nutrients);
+		        writer.print("calories," + nutrientMap.get("calories") + ",");
+		        writer.print("fat," + nutrientMap.get("fat") + ",");
+		        writer.print("carbohydrate," + nutrientMap.get("carbohydrate") + ",");
+		        writer.print("fiber," + nutrientMap.get("fiber") + ",");
+		        writer.println("protein," + nutrientMap.get("protein"));
+		      
 		    }
 		    writer.flush();
 		    writer.close();
 		    
-		    
 		}
-		catch(Exception e) {
-		    System.out.println("Hey Idiot");
+		catch (IOException e) {
+		    System.out.println(e.getMessage());
 		}
+		
+		
 		
 	}
 }
