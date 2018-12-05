@@ -5,41 +5,57 @@ import java.util.List;
 
 import javafx.collections.FXCollections;
 
+/**
+ * This class represents the back-end for managing all operations associated with
+ * FoodItems in MealData
+ * 
+ * @author Aaron Hernandez
+ * @author Xiao Fei
+ * @author Henry Koenig
+ */
 public class MealData {
+	
 	// List of all the my meal items
 	private List<FoodItem> mealList;
 	
 	/**
-	 * The constructor
+	 * The public constructor
 	 */
 	public MealData() {
 		this.mealList = FXCollections.observableArrayList();
 	}
 	
+	/**
+	 * The method adds given mealItem to mealList
+	 * @param mealItem
+	 */
 	public void addFoodItem(FoodItem mealItem) {
 	    mealList.add(mealItem);
 	}
 	
+	/**
+	 * The method removes given mealItem from mealList
+	 * @param mealItem
+	 */
 	public void removeFoodItem(FoodItem mealItem) {
 	    mealList.remove(mealItem);
 	}
 	
 	/**
-	 * 
-	 * @return
+	 * @return mealList field
 	 */
 	public List<FoodItem> getMealList(){
 		return this.mealList;
 	}
 	
 	/**
+	 * The method analyzes nutrients contained in my meal
 	 * 
-	 * @return
+	 * @return a map with nutrients and their value
 	 */
 	public HashMap<String, Double> getAnalysis(){
 		HashMap<String, Double> mealAnalysis = new HashMap<String, Double>();
 		
-		//add calories
 		double calories = 0;
 		double fat = 0;
 		double carbs = 0;

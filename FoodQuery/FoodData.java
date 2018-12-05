@@ -14,7 +14,9 @@ import javafx.collections.FXCollections;
  * This class represents the backend for managing all the operations associated
  * with FoodItems
  * 
- * @author sapan (sapan@cs.wisc.edu)
+ * @author Aaron Hernandez
+ * @author Xiao Fei
+ * @author Henry Koenig
  */
 public class FoodData implements FoodDataADT<FoodItem> {
 
@@ -82,6 +84,8 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	public List<FoodItem> filterByName(String substring) {
 		List<FoodItem> filteredList = new ArrayList<FoodItem>();
 		for (int i = 0; i < foodItemList.size(); i++) {
+			
+			// add food that contains substring to filtered list
 			if (foodItemList.get(i).getName().contains(substring)) {
 				filteredList.add(foodItemList.get(i));
 			}
@@ -110,6 +114,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		
 	    for (int i = 0; i < foodItemList.size(); i++) {
 	    	
+	    	// comparing the food item's name to existing food items' names
 	        if (foodItemList.get(i).getName().compareTo(foodItem.getName()) > 0) {
 	            foodItemList.add(i, foodItem);
 	            return;

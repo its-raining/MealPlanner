@@ -75,7 +75,8 @@ public class FoodItem {
 	 * then returns 0.
 	 */
 	public double getNutrientValue(String name) {
-
+		
+		// check if given nutrient's name exists
 		if (this.nutrients.containsKey(name)) {
 			return this.nutrients.get(name);
 		}
