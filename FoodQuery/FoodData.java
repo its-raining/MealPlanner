@@ -100,8 +100,24 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public List<FoodItem> filterByNutrients(List<String> rules) {
-		
-		return null;
+	    //Holds the results of each rule being applied individually
+	    List <List<FoodItem>> rulesResults = new ArrayList<List<FoodItem>>();
+	    
+	    //range searches for each rule, and adds the result to rulesResults
+	    for (int i = 0; i < rules.size(); i++) {
+	        String[] currRule = rules.get(i).split(" ");
+	        rulesResults.add(indexes.get(currRule[0]).rangeSearch(Double.parseDouble(currRule[2]), currRule[1]));
+	    }
+	    
+	    //The list that is the intersection of the results
+	    List<FoodItem> filteredFoods = rulesResults.get(0);
+	    
+	    
+	    for (int i = 1; i < rulesResults.size(); i++) {
+	        filteredFoods.retainAll(rulesResults.get(i));
+	    }
+	    
+		return filteredFoods;
 	}
 
 	/*
