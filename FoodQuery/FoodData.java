@@ -105,6 +105,11 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public List<FoodItem> filterByNutrients(List<String> rules) {
+		
+		if (rules == null || rules.isEmpty()) {
+			return this.getAllFoodItems();
+		}
+		
 	    //Holds the results of each rule being applied individually
 	    List <List<FoodItem>> rulesResults = new ArrayList<List<FoodItem>>();
 	    
@@ -160,7 +165,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public List<FoodItem> getAllFoodItems() {
-		return this.foodItemList;
+		return new ArrayList<FoodItem>(this.foodItemList);
 	}
 
 	@Override

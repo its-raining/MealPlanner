@@ -1,6 +1,8 @@
 package application;
 
+import java.util.List;
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 
@@ -39,6 +41,7 @@ public class GUI {
 	// the private field of TableView for my meal list
 	private static TableView<FoodItem> mealView;
 	
+	// the private field of TableView for filter list
 	private static TableView<String> filterView;
 	
 	// the private field of ObservableList for food list
@@ -138,11 +141,51 @@ public class GUI {
 		fileMenu.getItems().add(load);
 		fileMenu.getItems().add(save);
 		
-		// items underneath the FoodList menu
+		// items underneath the filter menu
 		MenuItem applyQuery = new MenuItem("Apply Query");
 		MenuItem resetFilter = new MenuItem("Reset Filter");
 		
-		// add to list button's functionality
+		// apply query button's functionality
+		applyQuery.setOnAction(new EventHandler<ActionEvent>() {
+			@Override
+			public void handle(ActionEvent e) {
+
+				// nutrient rules list filtered without name rules
+				List <String> nutrientRules = new ArrayList<String>();
+				
+				// list of filtered name rules
+				List <FoodItem> nameFilterResults = null;
+				
+				for (String rule : filterList) {
+					if (rule.contains("name")) {
+						if (nameFilterResults == null) {
+							nameFilterResults = foodData.filterByName(rule.split(" ")[1]);
+						} else {
+							nameFilterResults.retainAll(foodData.filterByName(rule.split(" ")[1]));
+						}
+					}
+					else {
+						nutrientRules.add(rule);
+					}
+				}
+				
+				List <FoodItem> filteredNutrients = foodData.filterByNutrients(nutrientRules);
+				// find existing rules in filterList	
+				
+				if (nameFilterResults == null) {
+					nameFilterResults = foodData.getAllFoodItems();
+				}
+				
+				filteredNutrients.retainAll(nameFilterResults);
+				
+				foodList.clear();
+				for (FoodItem food : filteredNutrients) {
+				    foodList.add(food);
+			    } // update foodList
+			}
+		});
+		
+		// reset filter button's functionality
 		resetFilter.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
