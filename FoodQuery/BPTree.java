@@ -286,10 +286,18 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         Node split() {
             // TODO : Complete
         	InternalNode newInternalNode = new InternalNode();
+        	int size = this.children.size();
         	
-        	for (int i = 0; i < branchingFactor / 2; i++) {
-        		newInternalNode.children.add(this.children.remove(i));
-        		newInternalNode.keys.add(this.keys.remove(i));
+        	for (int i = 0; i < size / 2; i++) {
+        		newInternalNode.children.add(this.children.remove(0));
+        	}
+        	
+        	for (int j = 0; j < branchingFactor / 2; j++) {
+        		newInternalNode.keys.add(this.keys.remove(0));
+        	}
+        	
+        	if (branchingFactor % 2 == 1) {
+        		this.keys.remove(0);
         	}
         	
             return newInternalNode;
@@ -305,20 +313,52 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 
 			switch (comparator) {
 			case "<=":
+
 				for (int i = 0; i < this.keys.size(); i++) {
-					if (this.keys.get(i).compareTo(key) <= 0) {
-						
+					if (this.keys.get(i).compareTo(key) < 0) {
+						comparedValues.addAll(this.children.get(i).rangeSearch(key, comparator));	
+					} 
+					
+					if (this.keys.get(i).compareTo(key) == 0) {
+						comparedValues.addAll(this.children.get(i+1).rangeSearch(key, comparator));	
+						break;
+					} 
+					
+					if (this.keys.get(i).compareTo(key) > 0) {
+						System.out.println(this.keys.get(i));
 						comparedValues.addAll(this.children.get(i).rangeSearch(key, comparator));
-						comparedValues.addAll(this.children.get(i+1).rangeSearch(key, comparator));
+						break;
 					}
+
+				}
+				
+				if (this.keys.get(this.keys.size()-1).compareTo(key) < 0) {
+					comparedValues.addAll(this.children.get(this.keys.size()).rangeSearch(key, comparator));
 				}
 				break;
+//				for (int i = 0; i < this.keys.size(); i++) {
+//					if (this.keys.get(i).compareTo(key) < 0) {
+//						
+//						comparedValues.addAll(this.children.get(i).rangeSearch(key, comparator));
+//						//comparedValues.addAll(this.children.get(i+1).rangeSearch(key, comparator));
+//					} else {
+//						comparedValues.addAll(this.children.get(i+1).rangeSearch(key, comparator));
+//						break;
+//					}
+//					
+//				}
+//				break;
 
 			case ">=":
+				if (this.keys.get(0).compareTo(key) > 0) {
+					comparedValues.addAll(this.children.get(0).rangeSearch(key, comparator));
+				}
+				
 				for (int i = 0; i < this.keys.size(); i++) {
 					if (this.keys.get(i).compareTo(key) >= 0) {
 						comparedValues.addAll(this.children.get(i+1).rangeSearch(key, comparator));
 					}
+					
 				}
 				break;
 
@@ -331,6 +371,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 				break;
 			}
 
+			//System.out.println(comparedValues);
 			return comparedValues;
 		}
     } // End of class InternalNode
@@ -423,7 +464,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
             
             // transfers over the first half of the keys-value pairs to newLeaf
             for (int i = 0; i < branchingFactor / 2; i++) {
-                newLeaf.insert(this.keys.remove(i), this.values.remove(i));	
+                newLeaf.insert(this.keys.remove(0), this.values.remove(0));	
             }
             
             // relinks newLeaf and the current leaf node 
@@ -471,6 +512,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 				break;
 			}
 
+			//System.out.println(comparedValues);
 			return comparedValues;
 		}
 
@@ -485,30 +527,46 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
      * @param args
      */
     public static void main(String[] args) {
-        // create empty BPTree with branching factor of 3
-        BPTree<Double, Double> bpTree = new BPTree<>(3);
+//        // create empty BPTree with branching factor of 3
+//        BPTree<Double, Double> bpTree = new BPTree<>(3);
+//
+//        // create a pseudo random number generator
+//        Random rnd1 = new Random();
+//
+//        // some value to add to the BPTree
+//        Double[] dd = {0.0d, 0.5d, 0.2d, 0.8d};
+//
+//        // build an ArrayList of those value and add to BPTree also
+//        // allows for comparing the contents of the ArrayList 
+//        // against the contents and functionality of the BPTree
+//        // does not ensure BPTree is implemented correctly
+//        // just that it functions as a data structure with
+//        // insert, rangeSearch, and toString() working.
+//        List<Double> list = new ArrayList<>();
+//        for (int i = 0; i < 400; i++) {
+//            Double j = dd[rnd1.nextInt(4)];
+//            list.add(j);
+//            bpTree.insert(j, j);
+//            //System.out.println("\n\nTree structure:\n" + bpTree.toString());
+//        }
+//        System.out.println("\n\nTree structure:\n" + bpTree.toString());
+//        List<Double> filteredValues = bpTree.rangeSearch(0.2d, ">=");
+//        System.out.println("Filtered values: " + filteredValues.toString());
+    	
+    	BPTree<Integer, String> bp = new BPTree<Integer,String>(5);
+    	
+    	for (int i = 1; i <= 13; i++ ) {
+    		bp.insert(i, i + "");
+    	}
 
-        // create a pseudo random number generator
-        Random rnd1 = new Random();
-
-        // some value to add to the BPTree
-        Double[] dd = {0.0d, 0.5d, 0.2d, 0.8d};
-
-        // build an ArrayList of those value and add to BPTree also
-        // allows for comparing the contents of the ArrayList 
-        // against the contents and functionality of the BPTree
-        // does not ensure BPTree is implemented correctly
-        // just that it functions as a data structure with
-        // insert, rangeSearch, and toString() working.
-        List<Double> list = new ArrayList<>();
-        for (int i = 0; i < 400; i++) {
-            Double j = dd[rnd1.nextInt(4)];
-            list.add(j);
-            bpTree.insert(j, j);
-            System.out.println("\n\nTree structure:\n" + bpTree.toString());
-        }
-        List<Double> filteredValues = bpTree.rangeSearch(0.2d, ">=");
-        System.out.println("Filtered values: " + filteredValues.toString());
+    	for (int j = 1; j <= 13; j++) {
+    		List<String> filteredValues = bp.rangeSearch(j, "<=");
+        	System.out.println("Filtered values " + j + ": " + filteredValues.toString());
+    	}
+    	
+    	List<String> filteredValues = bp.rangeSearch(7, "<=");
+    	System.out.println("Filtered values: " + filteredValues.toString());
+    	
     }
 
 } // End of class BPTree
