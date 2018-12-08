@@ -298,6 +298,9 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	
         	if (branchingFactor % 2 == 1) {
         		this.keys.remove(0);
+        	} else {
+        		newInternalNode.children.add(this.children.remove(0));
+        		this.keys.remove(0);
         	}
         	
             return newInternalNode;
@@ -315,7 +318,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 			case "<=":
 
 				for (int i = 0; i < this.keys.size(); i++) {
-					if (this.keys.get(i).compareTo(key) < 0) {
+					if (this.keys.get(i).compareTo(key) <= 0) {
 						comparedValues.addAll(this.children.get(i).rangeSearch(key, comparator));	
 					} 
 					
@@ -325,7 +328,6 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 					} 
 					
 					if (this.keys.get(i).compareTo(key) > 0) {
-						System.out.println(this.keys.get(i));
 						comparedValues.addAll(this.children.get(i).rangeSearch(key, comparator));
 						break;
 					}
@@ -553,19 +555,19 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 //        List<Double> filteredValues = bpTree.rangeSearch(0.2d, ">=");
 //        System.out.println("Filtered values: " + filteredValues.toString());
     	
-    	BPTree<Integer, String> bp = new BPTree<Integer,String>(5);
+    	BPTree<Integer, String> bp = new BPTree<Integer,String>(7);
     	
-    	for (int i = 1; i <= 13; i++ ) {
+    	final int NUM = 21;
+    	
+    	for (int i = 1; i <= NUM; i++ ) {
     		bp.insert(i, i + "");
     	}
 
-    	for (int j = 1; j <= 13; j++) {
+    	for (int j = 1; j <= NUM; j++) {
     		List<String> filteredValues = bp.rangeSearch(j, "<=");
         	System.out.println("Filtered values " + j + ": " + filteredValues.toString());
     	}
-    	
-    	List<String> filteredValues = bp.rangeSearch(7, "<=");
-    	System.out.println("Filtered values: " + filteredValues.toString());
+    	System.out.println();
     	
     }
 
