@@ -119,6 +119,8 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	        rulesResults.add(indexes.get(currRule[0]).rangeSearch(Double.parseDouble(currRule[2]), currRule[1]));
 	    }
 	    
+	    System.out.println(indexes.get("calories").toString());
+	    
 	    //The list that is the intersection of the results
 	    List<FoodItem> filteredFoods = rulesResults.get(0);
 	    
@@ -137,18 +139,22 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public void addFoodItem(FoodItem foodItem) {
-		
+		boolean foodAdded = false;
 	    for (int i = 0; i < foodItemList.size(); i++) {
 	    	
 	    	// comparing the food item's name to existing food items' names
 	        if (foodItemList.get(i).getName().compareTo(foodItem.getName()) > 0) {
 	            foodItemList.add(i, foodItem);
-	            return;
-	        }
+	            foodAdded = true;
+	            break;
+	        } 
 	        
 	    }
+	    if(!foodAdded) {
+	    	foodItemList.add(foodItem);
+	    }
 	    //If greater than all food in list, add to end
-	    foodItemList.add(foodItem);
+	    //foodItemList.add(foodItem);
 	    
 	    //Lastly, add to all BPtrees
 	    indexes.get("calories").insert(foodItem.getNutrientValue("calories"), foodItem);
@@ -156,6 +162,8 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	    indexes.get("carbohydrate").insert(foodItem.getNutrientValue("carbohydrate"), foodItem);
 	    indexes.get("fiber").insert(foodItem.getNutrientValue("fiber"), foodItem);
 	    indexes.get("protein").insert(foodItem.getNutrientValue("protein"), foodItem);
+	    
+	    //System.out.println(foodItem.getNutrientValue("calories"));
 	}
 
 	/*
