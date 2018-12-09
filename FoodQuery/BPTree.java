@@ -239,7 +239,7 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	boolean hasInserted = false;
         	int i = 0;
         	for (i = 0; i < this.keys.size(); i++) {
-            	if (key.compareTo(this.keys.get(i)) < 0) {
+            	if (key.compareTo(this.keys.get(i)) <= 0) {
             		this.children.get(i).insert(key, value);
             		hasInserted = true;
             		break;
@@ -314,68 +314,73 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
         	
         	List<V> comparedValues = new ArrayList<V>();
         	
-			switch (comparator) {
-			case "<=":
-
-				for (int i = 0; i < this.keys.size(); i++) {
-					if (this.keys.get(i).compareTo(key) <= 0) {
-						comparedValues.addAll(this.children.get(i).rangeSearch(key, comparator));	
-					} 
-					
-					if (this.keys.get(i).compareTo(key) == 0) {
-						comparedValues.addAll(this.children.get(i+1).rangeSearch(key, comparator));	
-						break;
-					} 
-					
-					if (this.keys.get(i).compareTo(key) > 0) {
-						comparedValues.addAll(this.children.get(i).rangeSearch(key, comparator));
-						break;
-					}
-
-				}
-				
-				if (this.keys.get(this.keys.size()-1).compareTo(key) < 0) {
-					comparedValues.addAll(this.children.get(this.keys.size()).rangeSearch(key, comparator));
-				}
-				break;
-
-			case ">=":
-				
-				if (this.keys.get(0).compareTo(key) > 0) {
-					comparedValues.addAll(this.children.get(0).rangeSearch(key, comparator));
-				}
-				
-				for (int i = 0; i < this.keys.size(); i++) {
-					if (this.keys.get(i).compareTo(key) >= 0) {
-						comparedValues.addAll(this.children.get(i+1).rangeSearch(key, comparator));
-					} 
-					
-					if (this.keys.get(i).compareTo(key) < 0) {
-						comparedValues.addAll(this.children.get(i+1).rangeSearch(key, comparator));	
-					}
-				}
-				
-				break;
-
-			case "==":
-				for (int i = 0; i < this.keys.size(); i++) {
-					if (key.compareTo(this.keys.get(i)) < 0) {
-						comparedValues.addAll(this.children.get(i).rangeSearch(key, comparator));
-						break;
-					}
-					
-					if (key.compareTo(this.keys.get(i)) == 0) {
-						comparedValues.addAll(this.children.get(i+1).rangeSearch(key, comparator));
-						break;
-					}
-				}
-				
-				if (key.compareTo(this.keys.get(this.keys.size()-1)) > 0) {
-					comparedValues.addAll(this.children.get(this.keys.size()).rangeSearch(key, comparator));
-				}
-				
-				break;
-			}
+//			switch (comparator) {
+//			case "<=":
+//
+//				for (int i = 0; i < this.keys.size(); i++) {
+//					if (this.keys.get(i).compareTo(key) <= 0) {
+//						comparedValues.addAll(this.children.get(i).rangeSearch(key, comparator));	
+//					} 
+//					
+//					if (this.keys.get(i).compareTo(key) == 0) {
+//						comparedValues.addAll(this.children.get(i+1).rangeSearch(key, comparator));	
+//						break;
+//					} 
+//					
+//					if (this.keys.get(i).compareTo(key) > 0) {
+//						comparedValues.addAll(this.children.get(i).rangeSearch(key, comparator));
+//						break;
+//					}
+//
+//				}
+//				
+//				if (this.keys.get(this.keys.size()-1).compareTo(key) < 0) {
+//					comparedValues.addAll(this.children.get(this.keys.size()).rangeSearch(key, comparator));
+//				}
+//				break;
+//
+//			case ">=":
+//				
+//				if (this.keys.get(0).compareTo(key) > 0) {
+//					comparedValues.addAll(this.children.get(0).rangeSearch(key, comparator));
+//				}
+//				
+//				for (int i = 0; i < this.keys.size(); i++) {
+//					if (this.keys.get(i).compareTo(key) >= 0) {
+//						comparedValues.addAll(this.children.get(i+1).rangeSearch(key, comparator));
+//					} 
+//					
+//					if (this.keys.get(i).compareTo(key) < 0) {
+//						comparedValues.addAll(this.children.get(i+1).rangeSearch(key, comparator));	
+//					}
+//				}
+//				
+//				break;
+//
+//			case "==":
+//				for (int i = 0; i < this.keys.size(); i++) {
+//					if (key.compareTo(this.keys.get(i)) <= 0) {
+//						comparedValues.addAll(this.children.get(i).rangeSearch(key, comparator));
+//						break;
+//					}
+//					
+//					if (key.compareTo(this.keys.get(i)) == 0) {
+//						comparedValues.addAll(this.children.get(i+1).rangeSearch(key, comparator));
+//						break;
+//					}
+//				}
+//				
+//				if (key.compareTo(this.keys.get(this.keys.size()-1)) >= 0) {
+//					comparedValues.addAll(this.children.get(this.keys.size()).rangeSearch(key, comparator));
+//				} else if(key.compareTo(this.keys.get(this.keys.size()-1)) < 0) {
+//					for (int j = 1; j < branchingFactor - 1; j++) {
+//						comparedValues.addAll(this.children.get(j).rangeSearch(key,comparator));
+//					}
+//					
+//				}
+//				
+//				break;
+//			}
 
 			return comparedValues;
 		}
@@ -558,17 +563,29 @@ public class BPTree<K extends Comparable<K>, V> implements BPTreeADT<K, V> {
 //        List<Double> filteredValues = bpTree.rangeSearch(0.2d, "<=");
 //        System.out.println("Filtered values: " + filteredValues.toString());
     	
-    	BPTree<Integer, String> bp = new BPTree<Integer,String>(5);
+    	BPTree<Integer, String> bp = new BPTree<Integer,String>(3);
     	
-    	final int NUM = 30;
+    	final int NUM = 13;
     	
     	for (int i = 1; i <= NUM; i++ ) {
     		
-    		for (int k = 1; k <= NUM; k++) {
-    		    bp.insert(i, i + "");
-    		}
-    		//bp.insert(i, i + "");
+    		bp.insert(i, i + "");
+    		bp.insert(i, i + "");
+    		bp.insert(i, i + "");
+    		
     	}
+    	
+//    	bp.insert(1, 1 + " ");
+//    	bp.insert(1, 1 + " ");
+//    	bp.insert(1, 1 + " ");
+//    	bp.insert(2, 2 + " ");
+//    	bp.insert(2, 2 + " ");
+//    	bp.insert(2, 2 + " ");
+//    	bp.insert(1, 1 + " ");
+//    	bp.insert(1, 1 + " ");
+//    	bp.insert(2, 2 + " ");
+//    	bp.insert(3, 3 + " ");
+//    	bp.insert(0, 0 + " ");
 
     	for (int j = 1; j <= NUM; j++) {
     		List<String> filteredValues = bp.rangeSearch(j, "==");
