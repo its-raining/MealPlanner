@@ -1,7 +1,7 @@
 /**
  * Filename:   FoodItem.java
  * Project:    Meal Planner
- * Authors:    Henry Koenig, Xiao Fei, Aaron Hernandez
+ * Authors:    Henry Koenig 001, Xiao Fei 001, Aaron Hernandez 001
  * 
  * Additional credits: Java 8 API
  *
@@ -32,8 +32,10 @@ public class FoodItem {
 	/**
 	 * Constructor for FoodItem
 	 * 
-	 * @param name name of the food item
-	 * @param idunique id of the food item
+	 * @param name
+	 *            name of the food item
+	 * @param idunique
+	 *            id of the food item
 	 */
 	public FoodItem(String id, String name) {
 		this.id = id;
@@ -69,25 +71,29 @@ public class FoodItem {
 	}
 
 	/**
-	 * Adds a nutrient and its value to this food. If nutrient already exists, update the value
-	 * associated with it.
+	 * Adds a nutrient and its value to this food. If nutrient already exists,
+	 * update the value associated with it.
 	 * 
-	 * @param name the name of of the nutrient to add
-	 * @param value the value of the nutrient associated with name
+	 * @param name
+	 *            the name of of the nutrient to add
+	 * @param value
+	 *            the value of the nutrient associated with name
 	 */
 	public void addNutrient(String name, double value) {
 		this.nutrients.put(name.toLowerCase(), value);
 	}
 
 	/**
-	 * Returns the value associated with the given nutrient for this food item. If not present,
-	 * then returns 0.
+	 * Returns the value associated with the given nutrient for this food item. If
+	 * not present, then returns 0.
 	 * 
-	 * @param name the name of the nutrient to find the value of
-	 * @return the value associated with the given nutrient name, 0 if name is not present
+	 * @param name
+	 *            the name of the nutrient to find the value of
+	 * @return the value associated with the given nutrient name, 0 if name is not
+	 *         present
 	 */
 	public double getNutrientValue(String name) {
-		
+
 		// check if given nutrient's name exists
 		if (this.nutrients.containsKey(name)) {
 			return this.nutrients.get(name);
