@@ -1,3 +1,13 @@
+/**
+ * Filename:   FoodData.java
+ * Project:    Meal Planner
+ * Authors:    Henry Koenig, Xiao Fei, Aaron Hernandez
+ * 
+ * Additional credits: Java 8 API
+ *
+ * Bugs or other notes: None known.
+ * 
+ */
 package application;
 
 import java.util.ArrayList;
@@ -24,17 +34,17 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	// List of all the food items.
 	private List<FoodItem> foodItemList;
 
-	// Map of nutrients and their corresponding index
+	// Map of nutrients containg BPTrees of their value with the corresponding foodItem
 	private HashMap<String, BPTree<Double, FoodItem>> indexes;
 
 	/**
-	 * Public constructor
+	 * Public constructor for FoodData
 	 */
 	public FoodData() {
-		this.foodItemList = FXCollections.observableArrayList();
+		this.foodItemList = FXCollections.observableArrayList();//Created as an observable arrayList
 		this.indexes = new HashMap<String, BPTree<Double, FoodItem>>();
 		
-		//Create all of our BPtrees
+		//Create all of our BPtrees and add to map
 		indexes.put("calories", new BPTree<Double, FoodItem>(3));
 		indexes.put("fat", new BPTree<Double, FoodItem>(3));
 		indexes.put("carbohydrate", new BPTree<Double, FoodItem>(3));
@@ -49,14 +59,17 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public void loadFoodItems(String filePath) {		
-		try {			
+		try {	
+		    //Our input file we are loading from
 			File inFile = new File(filePath);
 			Scanner readFile = new Scanner(inFile);
+			 
 			while (readFile.hasNextLine()) {
 				
+			    //splits each new line at the dividing ","
 				String[] currLine = readFile.nextLine().split(",");
 				if (currLine.length == 0 || currLine[0].equals("")) {
-					// Exits loop at end of data
+					// Exits loop at end of data or at start of empty lines
 					break;
 				}
 				
@@ -68,14 +81,18 @@ public class FoodData implements FoodDataADT<FoodItem> {
 					tempFood.addNutrient(currLine[i], Double.parseDouble(currLine[i + 1]));
 					
 					if (i + 1 == currLine.length - 2) {						
-						// breaks loops on improper file format
+						// breaks loops on improper file format i.e. nutrients without corresponding values
 						break;
 					}
 				}
+				//adds our newly created food item to our foodItemList
 				this.addFoodItem(tempFood);
 			}
+			//closes our input
 			readFile.close();
+			
 		} catch (FileNotFoundException e) {
+		    //if we somehow can't find the file, print this error message
 			System.out.println("File not Found");
 		}
 	}
@@ -88,6 +105,8 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	@Override
 	public List<FoodItem> filterByName(String substring) {
 		List<FoodItem> filteredList = new ArrayList<FoodItem>();
+		
+		//check the name of every food item in the list
 		for (int i = 0; i < foodItemList.size(); i++) {
 			
 			// add food that contains substring to filtered list
@@ -106,6 +125,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	@Override
 	public List<FoodItem> filterByNutrients(List<String> rules) {
 		
+	    //If we don't have any rules, return the full foodItemList
 		if (rules == null || rules.isEmpty()) {
 			return this.getAllFoodItems();
 		}
@@ -119,12 +139,10 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	        rulesResults.add(indexes.get(currRule[0]).rangeSearch(Double.parseDouble(currRule[2]), currRule[1]));
 	    }
 	    
-	    System.out.println(indexes.get("calories").toString());
-	    
 	    //The list that is the intersection of the results
 	    List<FoodItem> filteredFoods = rulesResults.get(0);
 	    
-	    
+	    //Find the actual intersection of all the rules being applied
 	    for (int i = 1; i < rulesResults.size(); i++) {
 	        filteredFoods.retainAll(rulesResults.get(i));
 	    }
@@ -140,6 +158,8 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	@Override
 	public void addFoodItem(FoodItem foodItem) {
 		boolean foodAdded = false;
+		
+		//Find the proper place to insert in alphabetical order by name
 	    for (int i = 0; i < foodItemList.size(); i++) {
 	    	
 	    	// comparing the food item's name to existing food items' names
@@ -150,11 +170,11 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	        } 
 	        
 	    }
+	    
+	    //If we didn't add in the list somewhere, add it to the end of the list
 	    if(!foodAdded) {
 	    	foodItemList.add(foodItem);
 	    }
-	    //If greater than all food in list, add to end
-	    //foodItemList.add(foodItem);
 	    
 	    //Lastly, add to all BPtrees
 	    indexes.get("calories").insert(foodItem.getNutrientValue("calories"), foodItem);
@@ -163,7 +183,6 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	    indexes.get("fiber").insert(foodItem.getNutrientValue("fiber"), foodItem);
 	    indexes.get("protein").insert(foodItem.getNutrientValue("protein"), foodItem);
 	    
-	    //System.out.println(foodItem.getNutrientValue("calories"));
 	}
 
 	/*
@@ -173,6 +192,8 @@ public class FoodData implements FoodDataADT<FoodItem> {
 	 */
 	@Override
 	public List<FoodItem> getAllFoodItems() {
+	    /*Returns a new arrayList of foodItem with the same contents of foodItemList.
+	     * we don't want to return foodItemList itself, as other classes should not be able to modify it*/
 		return new ArrayList<FoodItem>(this.foodItemList);
 	}
 
@@ -183,7 +204,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 			
 		    File outFile = new File(filename);
 		    
-		    //Prevent errors later by creating a new file if outFile is not found
+		    //Prevent FIleNotFoundException later by creating a new file if outFile is not found
 		    if (!outFile.exists()) {
 		        outFile.createNewFile();
 		    }
@@ -195,6 +216,7 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		        writer.print(foodItemList.get(i).getID() + ",");
 		        writer.print(foodItemList.get(i).getName() + ",");
 		        
+		        //hashMap of our nutrients for this specific FoodItem
 		        HashMap<String, Double> nutrientMap = foodItemList.get(i).getNutrients();
 		        
 		        writer.print("calories," + nutrientMap.get("calories") + ",");
@@ -204,11 +226,14 @@ public class FoodData implements FoodDataADT<FoodItem> {
 		        writer.println("protein," + nutrientMap.get("protein"));
 		      
 		    }
+		    
+		    //Flush and close the PrintWriter
 		    writer.flush();
 		    writer.close();
 		    
 		}
 		catch (IOException e) {
+		    //If we encounter some sort of IOException, we will print its message
 		    System.out.println(e.getMessage());
 		}
 		
