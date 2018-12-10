@@ -1,8 +1,20 @@
+/**
+ * Filename:   FilterRulesForm.java
+ * Project:    p5
+ * Authors:    Aaron Hernandez 001, Henry Koenig 001, Xiao Fei 001
+ *
+ * Semester:   Fall 2018
+ * Course:     CS400
+ * 
+ * Due Date:   Dec 12th
+ * Version:    1.0
+ * 
+ * Credits:    N/A
+ * 
+ * Bugs:       N/A
+ */
 package application;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -13,10 +25,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Alert.AlertType;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -40,9 +50,7 @@ public class FilterRulesForm {
 	
 	/**
 	 * The public method called to set up the stage, scene and everything else in the form to add a food item
-	 * @param foodList
-	 * @param foodData
-	 * @param foodComparator
+	 * @param filterList
 	 */
 	public void start(ObservableList<String> filterList) {
         Stage stage = new Stage();
@@ -72,10 +80,12 @@ public class FilterRulesForm {
         rule.getItems().addAll("name", "calories", "fat", "carbohydrate", "fiber", "protein");
         rule.setPromptText("Rule Type");
         
+        // combo box contains all the comparators
         this.comparator = new ComboBox<String>();
         comparator.getItems().addAll("<=", ">=", "==");
         comparator.setPromptText("Comparator");
         
+        // text field for the value of rule
         this.value = new TextField();
         value.setMaxWidth(150);
         vBox.getChildren().addAll(rule, comparator, value);
@@ -95,15 +105,18 @@ public class FilterRulesForm {
         stage.show();
 	}
 	
+	/**
+	 * Disable comparator combo box when user select name rule
+	 */
 	public void handleRuleName() {
 		rule.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
-			public void handle(ActionEvent e) {
-				
+			public void handle(ActionEvent e) {				
 				String selectedRule = rule.getSelectionModel().getSelectedItem();
 				if (selectedRule != null && selectedRule.trim().equals("name")) {
-					comparator.setDisable(true);
 					
+					// disable comparator combo box
+					comparator.setDisable(true);					
 				} else {
 					comparator.setDisable(false);
 				}
@@ -113,7 +126,6 @@ public class FilterRulesForm {
 	
 	/**
 	 * The functionality of cancel button
-	 * @param cancel
 	 * @param stage
 	 */
 	public void handleCancel(Stage stage) {
@@ -127,11 +139,8 @@ public class FilterRulesForm {
 	
 	/**
 	 * The functionality of ok button
-	 * @param OK button
 	 * @param stage
-	 * @param foodList
-	 * @param foodData
-	 * @param foodComparator
+	 * @param filterList
 	 */
 	public void handleOK(Stage stage, ObservableList<String> filterList) {
 		okayButton.setOnAction(new EventHandler<ActionEvent>(){

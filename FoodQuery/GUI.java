@@ -1,3 +1,19 @@
+/**
+ * Filename:   GUI.java
+ * Project:    p5
+ * Authors:    Aaron Hernandez 001, Henry Koenig 001, Xiao Fei 001
+ *
+ * Semester:   Fall 2018
+ * Course:     CS400
+ * 
+ * Due Date:   Dec 12th
+ * Version:    1.0
+ * 
+ * Credits:    N/A
+ * 
+ * Bugs:       N/A
+ */
+
 package application;
 
 import java.util.List;
@@ -41,7 +57,7 @@ public class GUI {
 	// the private field of TableView for my meal list
 	private static TableView<FoodItem> mealView;
 	
-	// the private field of TableView for filter list
+	// the private field of TableView for filters' list
 	private static TableView<String> filterView;
 	
 	// the private field of ObservableList for food list
@@ -50,7 +66,7 @@ public class GUI {
 	// the private field of ObservableList for my meal list
 	private static ObservableList<FoodItem> mealList = FXCollections.observableArrayList();
 	
-	// the private field of ObservableList for my filter list
+	// the private field of ObservableList for filters' list
 	private static ObservableList<String> filterList = FXCollections.observableArrayList();
 	
 	// the private field of FoodData for food list
@@ -59,7 +75,7 @@ public class GUI {
 	// the private field of MealData for my meal list
 	private static MealData mealData = new MealData();
 	
-	// the private field of Comparator comparing FoodItem
+	// the private field of Comparator comparing names of FoodItem
 	private static final Comparator<FoodItem> FOOD_COMPARATOR = new Comparator<FoodItem>() {
 		@Override
 		public int compare(FoodItem food1, FoodItem food2) {
@@ -94,7 +110,7 @@ public class GUI {
 	
 	/**
 	 * Menu bar includes load & save and controls over filters
-	 * @return
+	 * @return MenuBar
 	 */
 	private static MenuBar setTopMenu() {
 		
@@ -156,6 +172,7 @@ public class GUI {
 				// list of filtered name rules
 				List <FoodItem> nameFilterResults = null;
 				
+				// loop through filter list
 				for (String rule : filterList) {
 					if (rule.contains("name")) {
 						if (nameFilterResults == null) {
@@ -165,23 +182,28 @@ public class GUI {
 						}
 					}
 					else {
+						
+						// add rules other than name to nutrient rules
 						nutrientRules.add(rule);
 					}
 				}
 				
+				// filter foodItem by nutrient rules 
 				List <FoodItem> filteredNutrients = foodData.filterByNutrients(nutrientRules);
-				// find existing rules in filterList	
 				
+				// if there isn't any rules in name filter, then get all the foodItem 	
 				if (nameFilterResults == null) {
 					nameFilterResults = foodData.getAllFoodItems();
 				}
 				
+				// intersect result of filtering name and filtering nutrients
 				filteredNutrients.retainAll(nameFilterResults);
 				
+				// update foodList
 				foodList.clear();
 				for (FoodItem food : filteredNutrients) {
 				    foodList.add(food);
-			    } // update foodList
+			    }
 			}
 		});
 		
@@ -189,9 +211,12 @@ public class GUI {
 		resetFilter.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-				filterList.clear();
 				
-				foodList.clear(); 				
+				// clear filterList and foodList but not foodData
+				filterList.clear();				
+				foodList.clear();
+				
+				// add foodItems in foodData to foodList
 				for (FoodItem food : foodData.getAllFoodItems()) {
 					foodList.add(food);
 				}
@@ -337,11 +362,10 @@ public class GUI {
 		addtoFoodList.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			 public void handle(ActionEvent e) {
-				FoodItemAddForm foodItemAddForm = new FoodItemAddForm();
-				foodItemAddForm.start(foodList, foodData, FOOD_COMPARATOR);
 				
-				// FIXME MAY NOT BE NEEDED
-				// Collections.sort(foodList, FOOD_COMPARATOR);				
+				// pop-up form that prompts user to add foodItem to my meal
+				FoodItemAddForm foodItemAddForm = new FoodItemAddForm();
+				foodItemAddForm.start(foodList, foodData, FOOD_COMPARATOR);							
 			}
 		});
 		
@@ -354,7 +378,9 @@ public class GUI {
 		// add to meal button's functionality
 		addtoMeal.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
-			 public void handle(ActionEvent e) {				
+			 public void handle(ActionEvent e) {
+				
+				// add selected food from foodList to my meal list
 				mealData.addFoodItem(foodView.getSelectionModel().getSelectedItem());
 				mealList.add(foodView.getSelectionModel().getSelectedItem());
 			}
@@ -369,6 +395,8 @@ public class GUI {
 		addNewRule.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
+				
+				// pop-up form that prompts user to add a new rule
 				FilterRulesForm filterRuleForm = new FilterRulesForm();
 				filterRuleForm.start(filterList);
 			}
@@ -379,10 +407,12 @@ public class GUI {
 		removeRule.setLayoutX(350);
 		removeRule.setLayoutY(47);
 		
-		// 
+		// the functionality of remove rule button
 		removeRule.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
+				
+				// selected rule will be removed from filterList
 				filterList.remove(filterView.getSelectionModel().getSelectedItem());
 			}
 		});

@@ -1,3 +1,18 @@
+/**
+ * Filename:   Main.java
+ * Project:    p5
+ * Authors:    Aaron Hernandez 001, Henry Koenig 001, Xiao Fei 001
+ *
+ * Semester:   Fall 2018
+ * Course:     CS400
+ * 
+ * Due Date:   Dec 12th
+ * Version:    1.0
+ * 
+ * Credits:    N/A
+ * 
+ * Bugs:       N/A
+ */
 package application;
 	
 import javafx.application.Application;
