@@ -1,3 +1,14 @@
+/**
+ * Filename:   application.css
+ * Project:    Meal Planner
+ * Authors:    Henry Koenig 001, Xiao Fei 001, Aaron Hernandez 001
+ * 
+ * Additional credits: Java 8 API
+ *
+ * Bugs or other notes: None known.
+ * 
+ */
+ 
 /* JavaFX CSS - Leave this comment until you have at least create one rule which uses -fx-Property */
 #bottompane {
 	-fx-min-height: 100;
