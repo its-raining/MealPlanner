@@ -1,6 +1,6 @@
 /**
  * Filename:   Main.java
- * Project:    p5
+ * Project:    Meal Planner
  * Authors:    Aaron Hernandez 001, Henry Koenig 001, Xiao Fei 001
  *
  * Semester:   Fall 2018
