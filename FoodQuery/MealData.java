@@ -1,13 +1,25 @@
+/**
+ * Filename:   MealData.java
+ * Project:    Meal Planner
+ * Authors:    Henry Koenig, Xiao Fei, Aaron Hernandez
+ * 
+ * Additional credits: Java 8 API, Javafx API
+ *
+ * Bugs or other notes: The "View Meal Summary" button in GUI rarely creates an almost
+ * entirely black window with no data displayed. Testing hasn't been able to recreate this problem 
+ * consistently, and we are lead to believe that it may be a computer specific error, or an issue with the Javafx 
+ * back end and not our code.
+ * 
+ */
 package application;
 
 import java.util.HashMap;
 import java.util.List;
-
 import javafx.collections.FXCollections;
 
 /**
  * This class represents the back-end for managing all operations associated with
- * FoodItems in MealData
+ * the foodItems in a meal
  * 
  * @author Aaron Hernandez
  * @author Xiao Fei
@@ -15,11 +27,11 @@ import javafx.collections.FXCollections;
  */
 public class MealData {
 	
-	// List of all the my meal items
+	// List of all the foodItems in this meal.
 	private List<FoodItem> mealList;
 	
 	/**
-	 * The public constructor
+	 * The public constructor for MealData
 	 */
 	public MealData() {
 		this.mealList = FXCollections.observableArrayList();
@@ -42,6 +54,7 @@ public class MealData {
 	}
 	
 	/**
+	 * Simply returns a reference to mealList
 	 * @return mealList field
 	 */
 	public List<FoodItem> getMealList(){
@@ -49,11 +62,13 @@ public class MealData {
 	}
 	
 	/**
-	 * The method analyzes nutrients contained in my meal
+	 * The method analyzes nutrients of the FoodItems within this MealData. It then returns the 
+	 * total values for each nutrient
 	 * 
 	 * @return a map with nutrients and their value
 	 */
 	public HashMap<String, Double> getAnalysis(){
+	    //create a HashMap of nutrients and initialize all nutrient values to 0
 		HashMap<String, Double> mealAnalysis = new HashMap<String, Double>();
 		
 		double calories = 0;
@@ -62,7 +77,7 @@ public class MealData {
 		double protein = 0;
 		double fiber = 0;
 		
-		//add up each nutrient's value
+		//add the values for each nutrient of each FoodItem
 		for (int i = 0; i < mealList.size(); i++) {
 			calories += mealList.get(i).getNutrients().get("calories");
 			fat += mealList.get(i).getNutrients().get("fat");
