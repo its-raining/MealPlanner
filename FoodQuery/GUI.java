@@ -396,10 +396,17 @@ public class GUI {
 		addtoMeal.setOnAction(new EventHandler<ActionEvent>() {
 			@Override
 			public void handle(ActionEvent e) {
-
 				// add selected food from foodList to my meal list
-				mealData.addFoodItem(foodView.getSelectionModel().getSelectedItem());
-				mealList.add(foodView.getSelectionModel().getSelectedItem());
+				if (foodView.getSelectionModel().getSelectedItem() == null) {
+					Alert alert = new Alert(AlertType.INFORMATION);
+					alert.setTitle("Invalid Input");
+					alert.setHeaderText(null);
+					alert.setContentText("Please select a food.");
+					alert.showAndWait();
+				} else {
+					mealData.addFoodItem(foodView.getSelectionModel().getSelectedItem());
+					mealList.add(foodView.getSelectionModel().getSelectedItem());
+				}
 			}
 		});
 
